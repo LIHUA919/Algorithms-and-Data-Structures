@@ -151,3 +151,190 @@ class Solution:
                 left += 1
         return "" if ans_left < 0 else s[ans_left: ans_right + 1]
 
+
+
+
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+class Solution:
+    def mergeTwoLists(self, list1: ListNode, list2: ListNode) -> ListNode:
+        # 创建一个虚拟头节点，方便构造合并后的链表
+        dummy = ListNode()
+        current = dummy
+
+        # 遍历两个链表，将节点按顺序合并
+        while list1 and list2:
+            if list1.val < list2.val:
+                current.next = list1
+                list1 = list1.next
+            else:
+                current.next = list2
+                list2 = list2.next
+            current = current.next
+
+        # 如果其中一个链表还有剩余节点，将其连接到新链表的末尾
+        if list1:
+            current.next = list1
+        if list2:
+            current.next = list2
+
+        return dummy.next
+
+# 示例驱动代码
+if __name__ == "__main__":
+    # 创建测试链表
+    list1 = ListNode(1, ListNode(2, ListNode(4)))
+    list2 = ListNode(1, ListNode(3, ListNode(4)))
+
+    # 实例化 Solution 并调用方法
+    solution = Solution()
+    merged_head = solution.mergeTwoLists(list1, list2)
+
+    # 打印合并后的链表
+    current = merged_head
+    while current:
+        print(current.val, end=" -> ")
+        current = current.next
+    print("None")
+
+
+class Node:
+    def __init__(self, val: int, next: 'Node' = None, random: 'Node' = None):
+        self.val = val
+        self.next = next
+        self.random = random
+
+class Solution:
+    def copyRandomList(self, head: 'Node') -> 'Node':
+        if not head:
+            return None
+
+        # Step 1: Create a copy of each node and insert it next to the original node.
+        current = head
+        while current:
+            copy_node = Node(current.val)
+            copy_node.next = current.next
+            current.next = copy_node
+            current = copy_node.next
+
+        # Step 2: Set the random pointers for the copied nodes.
+        current = head
+        while current:
+            if current.random:
+                current.next.random = current.random.next
+            current = current.next.next
+
+        # Step 3: Separate the original list from the copied list.
+        current = head
+        copy_head = head.next
+        while current:
+            copy_node = current.next
+            current.next = copy_node.next
+            current = current.next
+            if copy_node.next:
+                copy_node.next = copy_node.next.next
+
+        return copy_head
+
+# 示例驱动代码
+if __name__ == "__main__":
+    # 创建测试链表
+    node1 = Node(7)
+    node2 = Node(13)
+    node3 = Node(11)
+    node4 = Node(10)
+
+    # 设置节点的 next 和 random 指针
+    node1.next = node2
+    node2.next = node3
+    node3.next = node4
+    node2.random = node1  # node2 的 random 指向 node1
+    node4.random = node3  # node4 的 random 指向 node3
+
+    # 使用 Solution 类的 copyRandomList 方法
+    solution = Solution()
+    copy_head = solution.copyRandomList(node1)
+
+    # 打印复制后的链表
+    current = copy_head
+    while current:
+        random_val = current.random.val if current.random else "None"
+        print(f"Node(val={current.val}, random={random_val})")
+        current = current.next
+
+
+# Definition for singly-linked list.
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+class Solution:
+    def reverseBetween(self, head: ListNode, left: int, right: int) -> ListNode:
+        if not head or left == right:
+            return head
+
+        # 创建一个虚拟节点，以简化操作，指向头节点
+        dummy = ListNode(0)
+        dummy.next = head
+        prev = dummy
+
+        # Step 1: 找到 left 节点的前一个节点
+        for _ in range(left - 1):
+            prev = prev.next
+
+        # Step 2: 开始反转 left 到 right 的节点
+        current = prev.next
+        next_node = None
+
+        for _ in range(right - left):
+            next_node = current.next
+            current.next = next_node.next
+            next_node.next = prev.next
+            prev.next = next_node
+
+        return dummy.next
+
+# Definition for singly-linked list.
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+class Solution:
+    def reverseKGroup(self, head: ListNode, k: int) -> ListNode:
+        if not head or k == 1:
+            return head
+
+        # Step 1: Count the total number of nodes in the linked list
+        count = 0
+        current = head
+        while current:
+            count += 1
+            current = current.next
+
+        # Step 2: Use a dummy node to simplify the reversing process
+        dummy = ListNode(0)
+        dummy.next = head
+        prev_group_end = dummy
+
+        # Step 3: Reverse nodes in k-groups
+        while count >= k:
+            current = prev_group_end.next
+            next_node = current.next
+
+            # Reverse k nodes
+            for _ in range(1, k):
+                current.next = next_node.next
+                next_node.next = prev_group_end.next
+                prev_group_end.next = next_node
+                next_node = current.next
+
+            # Move the pointer for the end of the previous group
+            prev_group_end = current
+            count -= k
+
+        return dummy.next
