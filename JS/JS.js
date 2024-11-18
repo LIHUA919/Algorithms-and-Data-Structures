@@ -242,3 +242,99 @@ var twoSum = function(nums, target) {
   }
 };
 
+
+var evalRPN = function(tokens) {
+  let stack = [];
+
+  for (let token of tokens) {
+      if (token === "+" || token === "-" || token === "*" || token === "/") {
+          let b = stack.pop();
+          let a = stack.pop();
+          switch (token) {
+              case "+":
+                  stack.push(a + b);
+                  break;
+              case "-":
+                  stack.push(a - b);
+                  break;
+              case "*":
+                  stack.push(a * b);
+                  break;
+              case "/":
+                  stack.push(Math.trunc(a / b));
+                  break;
+          }
+      } else {
+          stack.push(parseInt(token, 10));
+      }
+  }
+
+  return stack.pop();
+};
+
+
+var calculate = function(s) {
+  let stack = [];
+  let currentNumber = 0;
+  let result = 0;
+  let sign = 1;
+
+  for (let i = 0; i < s.length; i++) {
+      let char = s[i];
+      
+      if (char >= '0' && char <= '9') {
+          currentNumber = currentNumber * 10 + (char - '0');
+      } else if (char === '+') {
+          result += sign * currentNumber;
+          currentNumber = 0;
+          sign = 1;
+      } else if (char === '-') {
+          result += sign * currentNumber;
+          currentNumber = 0;
+          sign = -1;
+      } else if (char === '(') {
+          stack.push(result);
+          stack.push(sign);
+          result = 0;
+          sign = 1;
+      } else if (char === ')') {
+          result += sign * currentNumber;
+          currentNumber = 0;
+          result *= stack.pop(); // pop sign
+          result += stack.pop(); // pop previous result
+      }
+  }
+  
+  result += sign * currentNumber;
+  return result;
+};
+
+function ListNode(val, next = null) {
+  this.val = val;
+  this.next = next;
+}
+
+var addTwoNumbers = function(l1, l2) {
+  let dummyHead = new ListNode(0);
+  let p = l1, q = l2, current = dummyHead;
+  let carry = 0;
+
+  while (p !== null || q !== null) {
+      let x = (p !== null) ? p.val : 0;
+      let y = (q !== null) ? q.val : 0;
+      let sum = x + y + carry;
+      carry = Math.floor(sum / 10);
+      current.next = new ListNode(sum % 10);
+      current = current.next;
+
+      if (p !== null) p = p.next;
+      if (q !== null) q = q.next;
+  }
+
+  if (carry > 0) {
+      current.next = new ListNode(carry);
+  }
+
+  return dummyHead.next;
+};
+
