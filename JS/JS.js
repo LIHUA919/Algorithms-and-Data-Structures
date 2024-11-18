@@ -99,3 +99,146 @@ var maxProfit = function(prices) {
     return ans
 }
 
+
+var MinStack = function() {
+  this.stack = [];
+  this.minStack = [];
+};
+
+/** 
+* @param {number} val
+* @return {void}
+*/
+MinStack.prototype.push = function(val) {
+  this.stack.push(val);
+  if (this.minStack.length === 0 || val <= this.minStack[this.minStack.length - 1]) {
+      this.minStack.push(val);
+  }
+};
+
+/**
+* @return {void}
+*/
+MinStack.prototype.pop = function() {
+  if (this.stack.pop() === this.minStack[this.minStack.length - 1]) {
+      this.minStack.pop();
+  }
+};
+
+/**
+* @return {number}
+*/
+MinStack.prototype.top = function() {
+  return this.stack[this.stack.length - 1];
+};
+
+/**
+* @return {number}
+*/
+MinStack.prototype.getMin = function() {
+  return this.minStack[this.minStack.length - 1];
+};
+
+var simplifyPath = function(path) {
+  let stack = [];
+  let parts = path.split('/');
+
+  for (let part of parts) {
+      if (part === '..') {
+          if (stack.length > 0) {
+              stack.pop();
+          }
+      } else if (part !== '' && part !== '.') {
+          stack.push(part);
+      }
+  }
+
+  return '/' + stack.join('/');
+};
+
+
+var isValid = function(s) {
+  let stack = [];
+  let map = {
+      ')': '(',
+      '}': '{',
+      ']': '['
+  };
+
+  for (let char of s) {
+      if (char === '(' || char === '{' || char === '[') {
+          stack.push(char);
+      } else {
+          if (stack.length === 0 || stack[stack.length - 1] !== map[char]) {
+              return false;
+          }
+          stack.pop();
+      }
+  }
+
+  return stack.length === 0;
+};
+
+
+
+var findMinArrowShots = function(points) {
+  if (points.length === 0) return 0;
+
+  // Sort the balloons by their ending point
+  points.sort((a, b) => a[1] - b[1]);
+  
+  let arrows = 1;
+  let currentEnd = points[0][1];
+
+  for (let i = 1; i < points.length; i++) {
+      // If the current balloon starts after the end of the previous one,
+      // we need another arrow
+      if (points[i][0] > currentEnd) {
+          arrows++;
+          currentEnd = points[i][1];
+      }
+  }
+
+  return arrows;
+};
+
+
+var insert = function(intervals, newInterval) {
+  let result = [];
+  let i = 0;
+  
+  // Add all intervals that come before newInterval
+  while (i < intervals.length && intervals[i][1] < newInterval[0]) {
+      result.push(intervals[i]);
+      i++;
+  }
+  
+  // Merge all overlapping intervals with newInterval
+  while (i < intervals.length && intervals[i][0] <= newInterval[1]) {
+      newInterval[0] = Math.min(newInterval[0], intervals[i][0]);
+      newInterval[1] = Math.max(newInterval[1], intervals[i][1]);
+      i++;
+  }
+  result.push(newInterval);
+  
+  // Add all intervals that come after newInterval
+  while (i < intervals.length) {
+      result.push(intervals[i]);
+      i++;
+  }
+  
+  return result;
+};
+
+
+var twoSum = function(nums, target) {
+  let map = new Map();
+  for (let i = 0; i < nums.length; i++) {
+      let complement = target - nums[i];
+      if (map.has(complement)) {
+          return [map.get(complement), i];
+      }
+      map.set(nums[i], i);
+  }
+};
+
