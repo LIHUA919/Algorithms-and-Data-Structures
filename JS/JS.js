@@ -338,3 +338,224 @@ var addTwoNumbers = function(l1, l2) {
   return dummyHead.next;
 };
 
+
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {TreeNode}
+ */
+var invertTree = function(root) {
+  // Base case: if root is null, return null
+  if (root === null) return null;
+  
+  // Swap the left and right children
+  const temp = root.left;
+  root.left = root.right;
+  root.right = temp;
+  
+  // Recursively invert left and right subtrees
+  invertTree(root.left);
+  invertTree(root.right);
+  
+  return root;
+};
+
+
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {boolean}
+ */
+var isSymmetric = function(root) {
+  // Helper function to check symmetry of two subtrees
+  const isMirror = (left, right) => {
+      // If both nodes are null, they're symmetric
+      if (!left && !right) return true;
+      
+      // If one node is null and other isn't, not symmetric
+      if (!left || !right) return false;
+      
+      // Check if values are same and subtrees are symmetric
+      return (left.val === right.val) && 
+             isMirror(left.left, right.right) && 
+             isMirror(left.right, right.left);
+  };
+  
+  // Start checking from root's left and right subtrees
+  return isMirror(root.left, root.right);
+};
+
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {number[]} preorder
+ * @param {number[]} inorder
+ * @return {TreeNode}
+ */
+var buildTree = function(preorder, inorder) {
+  // Base case
+  if (!preorder.length || !inorder.length) return null;
+  
+  // First element in preorder is the root
+  const rootVal = preorder[0];
+  const root = new TreeNode(rootVal);
+  
+  // Find root's index in inorder
+  const rootIndex = inorder.indexOf(rootVal);
+  
+  // Recursively build left and right subtrees
+  root.left = buildTree(
+      preorder.slice(1, rootIndex + 1), 
+      inorder.slice(0, rootIndex)
+  );
+  
+  root.right = buildTree(
+      preorder.slice(rootIndex + 1), 
+      inorder.slice(rootIndex + 1)
+  );
+  
+  return root;
+};
+
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {number[]} inorder
+ * @param {number[]} postorder
+ * @return {TreeNode}
+ */
+var buildTree = function(inorder, postorder) {
+  // Base case
+  if (!inorder.length || !postorder.length) return null;
+  
+  // Last element in postorder is the root
+  const rootVal = postorder[postorder.length - 1];
+  const root = new TreeNode(rootVal);
+  
+  // Find root's index in inorder
+  const rootIndex = inorder.indexOf(rootVal);
+  
+  // Recursively build left and right subtrees
+  root.left = buildTree(
+      inorder.slice(0, rootIndex), 
+      postorder.slice(0, rootIndex)
+  );
+  
+  root.right = buildTree(
+      inorder.slice(rootIndex + 1), 
+      postorder.slice(rootIndex, -1)
+  );
+  
+  return root;
+};
+
+
+function connect(root) {
+  if (!root) return null;
+  
+  let queue = [root];
+  
+  while (queue.length > 0) {
+      let size = queue.length;
+      let prev = null;
+      
+      for (let i = 0; i < size; i++) {
+          let curr = queue.shift();
+          
+          if (prev) {
+              prev.next = curr;
+          }
+          prev = curr;
+          
+          if (curr.left) {
+              queue.push(curr.left);
+          }
+          if (curr.right) {
+              queue.push(curr.right);
+          }
+      }
+  }
+  
+  return root;
+}
+
+
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {void} Do not return anything, modify root in-place instead.
+ */
+var flatten = function(root) {
+  if (!root) return;
+  
+  let curr = root;
+  
+  while (curr) {
+      if (curr.left) {
+          let prev = curr.left;
+          while (prev.right) {
+              prev = prev.right;
+          }
+          prev.right = curr.right;
+          curr.right = curr.left;
+          curr.left = null;
+      }
+      curr = curr.right;
+  }
+};
+
+
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @param {number} targetSum
+ * @return {boolean}
+ */
+var hasPathSum = function(root, targetSum) {
+  if (!root) return false;
+  
+  targetSum -= root.val;
+  if (!root.left && !root.right) return targetSum === 0;
+  
+  return hasPathSum(root.left, targetSum) || hasPathSum(root.right, targetSum);
+};

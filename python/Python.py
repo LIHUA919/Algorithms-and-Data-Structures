@@ -338,3 +338,23 @@ class Solution:
             count -= k
 
         return dummy.next
+
+
+
+class Solution:
+    def sumNumbers(self, root):
+        def dfs(node, current_sum):
+            if not node:
+                return 0
+            
+            # Update current path sum
+            current_sum = current_sum * 10 + node.val
+            
+            # If leaf node, return the path sum
+            if not node.left and not node.right:
+                return current_sum
+            
+            # Recursively sum left and right subtrees
+            return dfs(node.left, current_sum) + dfs(node.right, current_sum)
+        
+        return dfs(root, 0)
