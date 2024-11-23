@@ -988,3 +988,88 @@ var canFinish = function(numCourses, prerequisites) {
     // If we completed all courses, there's no cycle
     return completed === numCourses;
 };
+
+
+// 秒出模型：cerebras
+var snakesAndLadders = function(board) {
+    const n = board.length;
+    const visited = new Set();
+    const queue = [[1, 0]];
+    visited.add(1);
+
+    while (queue.length) {
+        const [curr, rolls] = queue.shift();
+        if (curr === n * n) return rolls;
+
+        for (let i = 1; i <= 6; i++) {
+            const next = curr + i;
+            if (next > n * n) continue;
+
+            const [row, col] = getCoordinates(next, n);
+            const value = board[row][col];
+            let destination = next;
+            if (value !== -1) destination = value;
+
+            if (!visited.has(destination)) {
+                queue.push([destination, rolls + 1]);
+                visited.add(destination);
+            }
+        }
+    }
+
+    return -1;
+
+    function getCoordinates(num, n) {
+        const row = Math.floor((num - 1) / n);
+        const col = (num - 1) % n;
+        if (row % 2 === 0) return [n - row - 1, col];
+        else return [n - row - 1, n - col - 1];
+    }
+};
+
+
+
+var minMutation = function(startGene, endGene, bank) {
+    const set = new Set(bank);
+    const queue = [[startGene, 0]];
+    const visited = new Set([startGene]);
+
+    while (queue.length) {
+        const [gene, steps] = queue.shift();
+        if (gene === endGene) return steps;
+
+        for (let i = 0; i < 8; i++) {
+            for (const char of 'ACGT') {
+                if (gene[i] === char) continue;
+                const nextGene = gene.slice(0, i) + char + gene.slice(i + 1);
+                if (!set.has(nextGene) || visited.has(nextGene)) continue;
+                queue.push([nextGene, steps + 1]);
+                visited.add(nextGene);
+            }
+        }
+    }
+
+    return -1;
+};
+
+
+
+var combine = function(n, k) {
+    const result = [];
+
+    function backtrack(start, path) {
+        if (path.length === k) {
+            result.push([...path]);
+            return;
+        }
+
+        for (let i = start; i <= n; i++) {
+            path.push(i);
+            backtrack(i + 1, path);
+            path.pop();
+        }
+    }
+
+    backtrack(1, []);
+    return result;
+};

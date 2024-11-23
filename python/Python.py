@@ -507,3 +507,721 @@ class Solution:
             return result
         else:
             return []
+        
+
+
+# 秒出模型： sambanova meta llama 70b instruct
+        
+
+from collections import deque
+
+class Solution:
+    def ladderLength(self, beginWord: str, endWord: str, wordList: list[str]) -> int:
+        """
+        Returns the number of words in the shortest transformation sequence from beginWord to endWord.
+        
+        Args:
+        beginWord (str): The starting word.
+        endWord (str): The target word.
+        wordList (list[str]): A list of words that can be used in the transformation sequence.
+        
+        Returns:
+        int: The number of words in the shortest transformation sequence, or 0 if no such sequence exists.
+        """
+        
+        # Create a set of words for efficient lookups
+        word_set = set(wordList)
+        
+        # If the end word is not in the word list, return 0
+        if endWord not in word_set:
+            return 0
+        
+        # Initialize a queue with the starting word and its level
+        queue = deque([(beginWord, 1)])
+        
+        # Perform BFS
+        while queue:
+            word, level = queue.popleft()
+            
+            # If the current word is the end word, return its level
+            if word == endWord:
+                return level
+            
+            # Generate all possible words by changing one character at a time
+            for i in range(len(word)):
+                for char in 'abcdefghijklmnopqrstuvwxyz':
+                    next_word = word[:i] + char + word[i + 1:]
+                    
+                    # If the next word is in the word set, add it to the queue and remove it from the word set
+                    if next_word in word_set:
+                        queue.append((next_word, level + 1))
+                        word_set.remove(next_word)
+        
+        # If no sequence is found, return 0
+        return 0
+
+# Example usage:
+solution = Solution()
+beginWord = "hit"
+endWord = "cog"
+wordList = ["hot","dot","dog","lot","log","cog"]
+print(solution.ladderLength(beginWord, endWord, wordList))  # Output: 5
+
+
+
+class TrieNode:
+    """A node in the Trie data structure."""
+    
+    def __init__(self):
+        # Initialize a dictionary to store child nodes
+        self.children = {}
+        
+        # Initialize a boolean to mark the end of a word
+        self.is_end_of_word = False
+
+
+class Trie:
+    """A Trie data structure."""
+    
+    def __init__(self):
+        # Initialize the root node
+        self.root = TrieNode()
+
+    def insert(self, word: str) -> None:
+        """
+        Inserts the string word into the trie.
+        
+        Args:
+        word (str): The word to be inserted.
+        """
+        
+        # Start at the root node
+        node = self.root
+        
+        # Iterate over each character in the word
+        for char in word:
+            # If the character is not in the node's children, add it
+            if char not in node.children:
+                node.children[char] = TrieNode()
+            
+            # Move to the child node
+            node = node.children[char]
+        
+        # Mark the end of the word
+        node.is_end_of_word = True
+
+    def search(self, word: str) -> bool:
+        """
+        Returns true if the string word is in the trie (i.e., was inserted before), and false otherwise.
+        
+        Args:
+        word (str): The word to be searched.
+        
+        Returns:
+        bool: True if the word is in the trie, false otherwise.
+        """
+        
+        # Start at the root node
+        node = self.root
+        
+        # Iterate over each character in the word
+        for char in word:
+            # If the character is not in the node's children, return False
+            if char not in node.children:
+                return False
+            
+            # Move to the child node
+            node = node.children[char]
+        
+        # Return True if the word is marked as the end of a word, False otherwise
+        return node.is_end_of_word
+
+    def startsWith(self, prefix: str) -> bool:
+        """
+        Returns true if there is a previously inserted string word that has the prefix prefix, and false otherwise.
+        
+        Args:
+        prefix (str): The prefix to be searched.
+        
+        Returns:
+        bool: True if a word with the prefix exists, false otherwise.
+        """
+        
+        # Start at the root node
+        node = self.root
+        
+        # Iterate over each character in the prefix
+        for char in prefix:
+            # If the character is not in the node's children, return False
+            if char not in node.children:
+                return False
+            
+            # Move to the child node
+            node = node.children[char]
+        
+        # If we've reached this point, a word with the prefix exists
+        return True
+
+
+# Example usage:
+trie = Trie()
+trie.insert("apple")
+trie.insert("app")
+trie.insert("banana")
+
+print(trie.search("apple"))  # Output: True
+print(trie.search("app"))    # Output: True
+print(trie.search("banana")) # Output: True
+print(trie.search("ban"))    # Output: False
+
+print(trie.startsWith("app"))  # Output: True
+print(trie.startsWith("ban"))  # Output: True
+print(trie.startsWith("ora"))  # Output: False
+
+
+
+class TrieNode:
+    """A node in the Trie data structure."""
+    
+    def __init__(self):
+        # Initialize the node with an empty dictionary to store children
+        self.children = {}
+        # Initialize a flag to mark the end of a word
+        self.is_end_of_word = False
+
+
+class WordDictionary:
+    """A dictionary of words that supports adding new words and finding if a string matches any previously added string."""
+    
+    def __init__(self):
+        # Initialize the Trie with a root node
+        self.root = TrieNode()
+
+    def addWord(self, word: str) -> None:
+        """Adds a word to the data structure."""
+        
+        # Start at the root node
+        node = self.root
+        # Iterate over each character in the word
+        for char in word:
+            # If the character is not in the node's children, add it
+            if char not in node.children:
+                node.children[char] = TrieNode()
+            # Move to the child node
+            node = node.children[char]
+        # Mark the end of the word
+        node.is_end_of_word = True
+
+    def search(self, word: str) -> bool:
+        """Returns true if there is any string in the data structure that matches word or false otherwise."""
+        
+        # Start at the root node
+        return self._search(self.root, word)
+
+    def _search(self, node: TrieNode, word: str) -> bool:
+        """Recursively searches for a word in the Trie."""
+        
+        # Iterate over each character in the word
+        for i, char in enumerate(word):
+            # If the character is a dot, recursively search all children
+            if char == '.':
+                return any(self._search(child, word[i+1:]) for child in node.children.values())
+            # If the character is not in the node's children, return False
+            elif char not in node.children:
+                return False
+            # Move to the child node
+            node = node.children[char]
+        # Return True if the node marks the end of a word
+        return node.is_end_of_word
+
+
+# Example usage:
+wordDictionary = WordDictionary()
+wordDictionary.addWord("bad")
+wordDictionary.addWord("dad")
+wordDictionary.addWord("mad")
+print(wordDictionary.search("pad"))  # Returns False
+print(wordDictionary.search("bad"))  # Returns True
+print(wordDictionary.search(".ad"))  # Returns True
+print(wordDictionary.search("b.."))  # Returns True
+
+
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.word = None
+
+class Solution:
+    def findWords(self, board: List[List[str]], words: List[str]) -> List[str]:
+        if not board or not words:
+            return []
+
+        m, n = len(board), len(board[0])
+        root = TrieNode()
+        for word in words:
+            node = root
+            for char in word:
+                if char not in node.children:
+                    node.children[char] = TrieNode()
+                node = node.children[char]
+            node.word = word
+
+        res = set()
+        def dfs(i, j, node):
+            if node.word:
+                res.add(node.word)
+            if i < 0 or i >= m or j < 0 or j >= n or board[i][j] not in node.children:
+                return
+            temp = board[i][j]
+            board[i][j] = '#'
+            for x, y in [(i-1, j), (i+1, j), (i, j-1), (i, j+1)]:
+                dfs(x, y, node.children[temp])
+            board[i][j] = temp
+
+        for i in range(m):
+            for j in range(n):
+                dfs(i, j, root)
+
+        return list(res)
+
+
+class Solution:
+    def letterCombinations(self, digits: str):
+        """Returns all possible letter combinations that the number could represent."""
+        
+        # Create a dictionary to map digits to letters
+        phone_mapping = {
+            "2": "abc",
+            "3": "def",
+            "4": "ghi",
+            "5": "jkl",
+            "6": "mno",
+            "7": "pqrs",
+            "8": "tuv",
+            "9": "wxyz"
+        }
+
+        def backtrack(combination, next_digits):
+            """Recursively generates all possible combinations."""
+            
+            # If there are no more digits to process, add the combination to the result
+            if len(next_digits) == 0:
+                result.append(combination)
+            # Otherwise, process the next digit
+            else:
+                # Get the letters corresponding to the next digit
+                for letter in phone_mapping[next_digits[0]]:
+                    # Recursively generate combinations with the current letter
+                    backtrack(combination + letter, next_digits[1:])
+
+        # Initialize the result list
+        result = []
+        # If the input is not empty, start the backtracking process
+        if digits:
+            backtrack("", digits)
+        # Return the result
+        return result
+
+
+# Example usage:
+solution = Solution()
+print(solution.letterCombinations("23"))  # Output: ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"]
+print(solution.letterCombinations(""))  # Output: []
+print(solution.letterCombinations("2"))  # Output: ["a", "b", "c"]
+
+
+class Solution:
+    def permute(self, nums: list[int]):
+        """Returns all possible permutations of the input array."""
+        
+        def backtrack(start, end):
+            """Recursively generates all permutations."""
+            
+            # If we've reached the end of the array, add the current permutation to the result
+            if start == end:
+                result.append(nums[:])
+            # Otherwise, try swapping each element with the current start element
+            else:
+                for i in range(start, end):
+                    # Swap the current start element with the i-th element
+                    nums[start], nums[i] = nums[i], nums[start]
+                    # Recursively generate permutations with the swapped elements
+                    backtrack(start + 1, end)
+                    # Swap the elements back to restore the original array
+                    nums[start], nums[i] = nums[i], nums[start]
+
+        # Initialize the result list
+        result = []
+        # Start the backtracking process
+        backtrack(0, len(nums))
+        # Return the result
+        return result
+
+
+
+# llama 3.2 3b
+
+
+# Example usage:
+solution = Solution()
+print(solution.permute([1, 2, 3]))  # Output: [[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]]
+print(solution.permute([0, 1]))  # Output: [[0, 1], [1, 0]]
+print(solution.permute([1]))  # Output: [[1]]
+
+
+class Solution:
+    def combinationSum(self, candidates, target):
+        """
+        Returns a list of all unique combinations of candidates where the chosen numbers sum to target.
+
+        Args:
+            candidates (list): A list of distinct integers.
+            target (int): The target integer.
+
+        Returns:
+            list: A list of lists, where each sublist is a unique combination of candidates that sum to target.
+        """
+        def backtrack(remain, comb, start):
+            # If the remaining sum is zero, it means we have found a valid combination
+            if remain == 0:
+                result.append(list(comb))
+                return
+            # If the remaining sum is negative, it means the current combination is not valid
+            elif remain < 0:
+                return
+            # Iterate over the candidates array starting from the start index
+            for i in range(start, len(candidates)):
+                # Add the current candidate to the current combination
+                comb.append(candidates[i])
+                # Recursively call the backtrack function with the updated remaining sum and combination
+                backtrack(remain - candidates[i], comb, i)
+                # Remove the last added candidate from the current combination (backtracking)
+                comb.pop()
+
+        # Sort the candidates array in ascending order
+        candidates.sort()
+        result = []
+        backtrack(target, [], 0)
+        return result
+
+# Example usage:
+solution = Solution()
+candidates = [2, 3, 5]
+target = 8
+print(solution.combinationSum(candidates, target))
+
+
+
+# 405
+class Solution:
+    def totalNQueens(self, n: int) -> int:
+        """
+        Returns the number of distinct solutions to the n-queens puzzle.
+
+        :param n: The size of the chessboard (n x n).
+        :return: The number of distinct solutions.
+        """
+
+        def is_safe(board, row, col):
+            """
+            Checks if it is safe to place a queen at the given position.
+
+            :param board: The current state of the board.
+            :param row: The row to check.
+            :param col: The column to check.
+            :return: True if it is safe, False otherwise.
+            """
+            for i in range(row):
+                if board[i] == col or \
+                    board[i] - i == col - row or \
+                    board[i] + i == col + row:
+                    return False
+            return True
+
+        def backtrack(board, row):
+            """
+            Recursively tries to place queens on the board.
+
+            :param board: The current state of the board.
+            :param row: The current row.
+            :return: The number of distinct solutions.
+            """
+            if row == n:
+                return 1
+            count = 0
+            for col in range(n):
+                if is_safe(board, row, col):
+                    board[row] = col
+                    count += backtrack(board, row + 1)
+            return count
+
+        board = [-1] * n
+        return backtrack(board, 0)
+    
+
+    
+#1b
+
+class Solution:
+    def generateParenthesis(self, n):
+        """
+        Generates all combinations of well-formed parentheses for a given number of pairs.
+
+        Args:
+            n (int): The number of pairs of parentheses.
+
+        Returns:
+            list: A list of strings, each representing a combination of well-formed parentheses.
+        """
+        def backtrack(open_count, close_count, path):
+            # If the path is well-formed, add it to the result list
+            if len(path) == 2 * n:
+                result.append(path)
+                return
+
+            # If the number of open parentheses is less than n, add an open parenthesis
+            if open_count < n:
+                backtrack(open_count + 1, close_count, path + "(")
+
+            # If the number of close parentheses is less than the number of open parentheses, add a close parenthesis
+            if close_count < open_count:
+                backtrack(open_count, close_count + 1, path + ")")
+
+        result = []
+        backtrack(0, 0, "")
+        return result
+
+# Example usage:
+n = 3
+combinations = Solution().generateParenthesis(n)
+for combination in combinations:
+    print(combination)
+
+
+
+
+class Solution:
+    def ladderLength(self, beginWord, endWord, wordList):
+        wordList = set(wordList)
+        queue = [(beginWord, 1)]
+        while queue:
+            word, length = queue.pop(0)
+            if word == endWord:
+                return length
+            for i in range(len(word)):
+                for c in 'abcdefghijklmnopqrstuvwxyz':
+                    next_word = word[:i] + c + word[i+1:]
+                    if next_word in wordList:
+                        wordList.remove(next_word)
+                        queue.append((next_word, length + 1))
+        return 0
+
+    def exist(self, board, word):
+        if not board:
+            return False
+        for i in range(len(board)):
+            for j in range(len(board[0])):
+                if self.dfs(board, i, j, word):
+                    return True
+        return False
+
+    def dfs(self, board, i, j, word):
+        if len(word) == 0: 
+            return True
+        if i<0 or i>=len(board) or j<0 or j>=len(board[0]) or word[0]!=board[i][j]:
+            return False
+        tmp = board[i][j]  
+        board[i][j] = "#"  
+        res = self.dfs(board, i+1, j, word[1:]) or self.dfs(board, i-1, j, word[1:]) \
+        or self.dfs(board, i, j+1, word[1:]) or self.dfs(board, i, j-1, word[1:])
+        board[i][j] = tmp
+        return res
+
+
+# llama 3.2 90b 
+
+class Solution:
+    def sortedArrayToBST(self, nums: List[int]) -> TreeNode:
+        # Base case: if the input array is empty, return None
+        if not nums:
+            return None
+
+        # Calculate the middle index of the array
+        mid = len(nums) // 2
+
+        # Create a new TreeNode with the value of the middle element
+        root = TreeNode(nums[mid])
+
+        # Recursively construct the left and right subtrees
+        root.left = self.sortedArrayToBST(nums[:mid])
+        root.right = self.sortedArrayToBST(nums[mid+1:])
+
+        # Return the root node of the height-balanced binary search tree
+        return root
+
+
+
+# Definition for singly-linked list.
+class ListNode:
+    def __init__(self, x):
+        self.val = x
+        self.next = None
+
+class Solution:
+    def sortList(self, head: ListNode) -> ListNode:
+        if not head or not head.next:
+            return head
+
+        # Split the linked list into two halves
+        mid = self.getMiddle(head)
+        midNext = mid.next
+        mid.next = None
+
+        # Recursively sort the two halves
+        left = self.sortList(head)
+        right = self.sortList(midNext)
+
+        # Merge the two sorted halves
+        return self.merge(left, right)
+
+    def getMiddle(self, head: ListNode) -> ListNode:
+        slow = head
+        fast = head
+        while fast.next and fast.next.next:
+            slow = slow.next
+            fast = fast.next.next
+        return slow
+
+    def merge(self, left: ListNode, right: ListNode) -> ListNode:
+        dummy = ListNode(0)
+        current = dummy
+        while left and right:
+            if left.val < right.val:
+                current.next = left
+                left = left.next
+            else:
+                current.next = right
+                right = right.next
+            current = current.next
+        if left:
+            current.next = left
+        elif right:
+            current.next = right
+        return dummy.next
+
+
+
+class Node:
+    def __init__(self, val=False, isLeaf=False, topLeft=None, topRight=None, bottomLeft=None, bottomRight=None):
+        self.val = val
+        self.isLeaf = isLeaf
+        self.topLeft = topLeft
+        self.topRight = topRight
+        self.bottomLeft = bottomLeft
+        self.bottomRight = bottomRight
+
+class Solution:
+    def construct(self, grid: List[List[int]]) -> Node:
+        def is_all_same(grid):
+            return len(set([grid[i][j] for i in range(len(grid)) for j in range(len(grid[0]))])) == 1
+
+        def construct_node(grid):
+            if is_all_same(grid):
+                return Node(val=grid[0][0], isLeaf=True)
+            else:
+                n = len(grid)
+                mid = n // 2
+                topLeft = [row[:mid] for row in grid[:mid]]
+                topRight = [row[mid:] for row in grid[:mid]]
+                bottomLeft = [row[:mid] for row in grid[mid:]]
+                bottomRight = [row[mid:] for row in grid[mid:]]
+                return Node(isLeaf=False,
+                             topLeft=construct_node(topLeft),
+                             topRight=construct_node(topRight),
+                             bottomLeft=construct_node(bottomLeft),
+                             bottomRight=construct_node(bottomRight))
+
+        return construct_node(grid)
+
+# Definition for singly-linked list.
+class ListNode:
+    def __init__(self, x):
+        self.val = x
+        self.next = None
+
+class Solution:
+    def mergeKLists(self, lists):
+        if not lists:
+            return None
+        if len(lists) == 1:
+            return lists[0]
+        mid = len(lists) // 2
+        left = self.mergeKLists(lists[:mid])
+        right = self.mergeKLists(lists[mid:])
+        return self.mergeTwoLists(left, right)
+
+    def mergeTwoLists(self, l1, l2):
+        dummy = ListNode(0)
+        curr = dummy
+        while l1 and l2:
+            if l1.val < l2.val:
+                curr.next = l1
+                l1 = l1.next
+            else:
+                curr.next = l2
+                l2 = l2.next
+            curr = curr.next
+        if l1:
+            curr.next = l1
+        elif l2:
+            curr.next = l2
+        return dummy.next
+    
+
+class Solution:
+    def maxSubArray(self, nums):
+        max_sum = float('-inf')
+        current_sum = 0
+
+        for num in nums:
+            current_sum = max(num, current_sum + num)
+            max_sum = max(max_sum, current_sum)
+
+        return max_sum
+    
+
+class Solution:
+    def maxSubarraySumCircular(self, nums):
+        total_sum = sum(nums)
+        max_sum = float('-inf')
+        current_sum = 0
+        min_sum = float('inf')
+        current_min_sum = 0
+
+        for num in nums:
+            current_sum = max(num, current_sum + num)
+            max_sum = max(max_sum, current_sum)
+
+            current_min_sum = min(num, current_min_sum + num)
+            min_sum = min(min_sum, current_min_sum)
+
+        if total_sum == min_sum:
+            return max_sum
+        else:
+            return max(max_sum, total_sum - min_sum)
+        
+
+
+class Solution:
+    def searchInsert(self, nums, target):
+        left, right = 0, len(nums) - 1
+        while left <= right:
+            mid = (left + right) // 2
+            if nums[mid] == target:
+                return mid
+            elif nums[mid] < target:
+                left = mid + 1
+            else:
+                right = mid - 1
+        return left
+
