@@ -383,3 +383,77 @@ class Solution:
         
         dfs(root)
         return self.max_sum
+    
+class BSTIterator:
+    def __init__(self, root):
+        # Initialize stack to store nodes
+        self.stack = []
+        
+        # Helper function to push all left nodes onto stack
+        def pushLeft(node):
+            while node:
+                self.stack.append(node)
+                node = node.left
+        
+        # Initialize stack with leftmost path
+        pushLeft(root)
+    
+    def hasNext(self):
+        # If stack is not empty, we have more nodes to process
+        return len(self.stack) > 0
+    
+    def next(self):
+        # Get next node from top of stack
+        current = self.stack.pop()
+        
+        # If current node has right child,
+        # push all left nodes of right subtree onto stack
+        if current.right:
+            temp = current.right
+            while temp:
+                self.stack.append(temp)
+                temp = temp.left
+        
+        return current.val
+    
+
+
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+class Solution:
+    def getMinimumDifference(self, root: TreeNode) -> int:
+        # Initialize variables to store the previous value and the minimum difference
+        prev = None
+        min_diff = float('inf')
+
+        # Helper function for in-order traversal
+        def in_order(node):
+            nonlocal prev, min_diff
+            if node is None:
+                return
+            # Traverse the left subtree
+            in_order(node.left)
+            # Process the current node
+            if prev is not None:
+                min_diff = min(min_diff, node.val - prev)
+            prev = node.val
+            # Traverse the right subtree
+            in_order(node.right)
+
+        # Start in-order traversal from the root
+        in_order(root)
+        return min_diff
+
+# Example usage:
+# root = TreeNode(4)
+# root.left = TreeNode(2)
+# root.right = TreeNode(6)
+# root.left.left = TreeNode(1)
+# root.left.right = TreeNode(3)
+# solution = Solution()
+# print(solution.getMinimumDifference(root))  # Output: 1

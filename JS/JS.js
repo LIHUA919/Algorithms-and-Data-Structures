@@ -559,3 +559,283 @@ var hasPathSum = function(root, targetSum) {
   
   return hasPathSum(root.left, targetSum) || hasPathSum(root.right, targetSum);
 };
+
+
+
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+class BSTIterator {
+  constructor(root) {
+      // Initialize stack for storing nodes
+      this.stack = [];
+      
+      // Helper function to push all left nodes onto stack
+      const pushLeft = (node) => {
+          while (node) {
+              this.stack.push(node);
+              node = node.left;
+          }
+      }
+      
+      // Initialize stack with leftmost path
+      pushLeft(root);
+  }
+  
+  hasNext() {
+      // If stack is not empty, we have more nodes to process
+      return this.stack.length > 0;
+  }
+  
+  next() {
+      // Get next node from top of stack
+      const current = this.stack.pop();
+      
+      // If current node has right child,
+      // push all left nodes of right subtree onto stack
+      if (current.right) {
+          let temp = current.right;
+          while (temp) {
+              this.stack.push(temp);
+              temp = temp.left;
+          }
+      }
+      
+      return current.val;
+  }
+}
+
+/** 
+* Your BSTIterator object will be instantiated and called as such:
+* var obj = new BSTIterator(root)
+* var param_1 = obj.hasNext()
+* var param_2 = obj.next()
+*/
+
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {number}
+ */
+const countNodes = function(root) {
+  if (!root) return 0;
+  
+  // Get height of left and right edges
+  const getLeftHeight = (node) => {
+      let height = 0;
+      while (node) {
+          height++;
+          node = node.left;
+      }
+      return height;
+  };
+  
+  const getRightHeight = (node) => {
+      let height = 0;
+      while (node) {
+          height++;
+          node = node.right;
+      }
+      return height;
+  };
+  
+  // Get left and right heights
+  const leftHeight = getLeftHeight(root);
+  const rightHeight = getRightHeight(root);
+  
+  // If heights are equal, tree is perfect binary tree
+  if (leftHeight === rightHeight) {
+      return Math.pow(2, leftHeight) - 1;
+  }
+  
+  // Otherwise, recursively count nodes
+  return 1 + countNodes(root.left) + countNodes(root.right);
+};
+
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val) {
+ *     this.val = val;
+ *     this.left = this.right = null;
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @param {TreeNode} p
+ * @param {TreeNode} q
+ * @return {TreeNode}
+ */
+const lowestCommonAncestor = function(root, p, q) {
+  // Base cases
+  if (!root || root === p || root === q) {
+      return root;
+  }
+  
+  // Look for p and q in left and right subtrees
+  const leftResult = lowestCommonAncestor(root.left, p, q);
+  const rightResult = lowestCommonAncestor(root.right, p, q);
+  
+  // If we found both p and q in different subtrees,
+  // current node is the LCA
+  if (leftResult && rightResult) {
+      return root;
+  }
+  
+  // If we found only one node, return that node
+  // (it could be the LCA if the other node is its descendant)
+  return leftResult || rightResult;
+};
+
+
+
+/**
+ * @param {TreeNode} root
+ * @return {number[]}
+ */
+const rightSideView = function(root) {
+  const result = [];
+  
+  function dfs(node, level) {
+      if (!node) return;
+      
+      // If this is the first node we've seen at this level
+      // it must be the rightmost node when traversing right first
+      if (level === result.length) {
+          result.push(node.val);
+      }
+      
+      // Visit right child first to ensure we see rightmost nodes first
+      if (node.right) dfs(node.right, level + 1);
+      if (node.left) dfs(node.left, level + 1);
+  }
+  
+  dfs(root, 0);
+  return result;
+};
+
+
+
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {number[]}
+ */
+var averageOfLevels = function(root) {
+  if (!root) return [];
+  
+  const result = [];
+  const queue = [root];
+  
+  while (queue.length) {
+      const levelSize = queue.length;
+      let levelSum = 0;
+      
+      for (let i = 0; i < levelSize; i++) {
+          const node = queue.shift();
+          levelSum += node.val;
+          
+          if (node.left) queue.push(node.left);
+          if (node.right) queue.push(node.right);
+      }
+      
+      result.push(levelSum / levelSize);
+  }
+  
+  return result;
+};
+
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {number[][]}
+ */
+var levelOrder = function(root) {
+  if (!root) return [];
+  
+  const result = [];
+  const queue = [root];
+  
+  while (queue.length) {
+      const levelSize = queue.length;
+      const currentLevel = [];
+      
+      for (let i = 0; i < levelSize; i++) {
+          const node = queue.shift();
+          currentLevel.push(node.val);
+          
+          if (node.left) queue.push(node.left);
+          if (node.right) queue.push(node.right);
+      }
+      
+      result.push(currentLevel);
+  }
+  
+  return result;
+};
+
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+function zigzagLevelOrder(root) {
+  if (!root) return [];
+  
+  const result = [];
+  const queue = [root];
+  let isLeftToRight = true;
+  
+  while (queue.length) {
+      const levelSize = queue.length;
+      const currentLevel = [];
+      
+      for (let i = 0; i < levelSize; i++) {
+          const node = queue.shift();
+          
+          // Add values based on current direction
+          if (isLeftToRight) {
+              currentLevel.push(node.val);
+          } else {
+              currentLevel.unshift(node.val);
+          }
+          
+          // Add children to queue
+          if (node.left) queue.push(node.left);
+          if (node.right) queue.push(node.right);
+      }
+      
+      result.push(currentLevel);
+      isLeftToRight = !isLeftToRight;
+  }
+  
+  return result;
+}
