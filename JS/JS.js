@@ -839,3 +839,152 @@ function zigzagLevelOrder(root) {
   
   return result;
 }
+
+
+
+/**
+ * @param {character[][]} board
+ * @return {void} Do not return anything, modify board in-place instead.
+ */
+var solve = function(board) {
+    if (!board || !board.length) return;
+    
+    const m = board.length;
+    const n = board[0].length;
+    
+    // Mark connected boundary O's as safe (change to 'S')
+    // Check first and last row
+    for (let j = 0; j < n; j++) {
+        dfs(board, 0, j);        // First row
+        dfs(board, m-1, j);      // Last row
+    }
+    
+    // Check first and last column
+    for (let i = 0; i < m; i++) {
+        dfs(board, i, 0);        // First column
+        dfs(board, i, n-1);      // Last column
+    }
+    
+    // Process the board: O -> X (captured) and S -> O (safe)
+    for (let i = 0; i < m; i++) {
+        for (let j = 0; j < n; j++) {
+            if (board[i][j] === 'O') {
+                board[i][j] = 'X';  // Capture surrounded O's
+            } else if (board[i][j] === 'S') {
+                board[i][j] = 'O';  // Restore safe O's
+            }
+        }
+    }
+};
+
+// DFS to mark connected O's as safe
+function dfs(board, i, j) {
+    // Check bounds and if current cell is 'O'
+    if (i < 0 || i >= board.length || j < 0 || j >= board[0].length || board[i][j] !== 'O') {
+        return;
+    }
+    
+    // Mark as safe
+    board[i][j] = 'S';
+    
+    // Check all 4 directions
+    dfs(board, i+1, j);  // Down
+    dfs(board, i-1, j);  // Up
+    dfs(board, i, j+1);  // Right
+    dfs(board, i, j-1);  // Left
+}
+
+
+/**
+ * // Definition for a Node.
+ * function Node(val, neighbors) {
+ *    this.val = val === undefined ? 0 : val;
+ *    this.neighbors = neighbors === undefined ? [] : neighbors;
+ * };
+ */
+
+/**
+ * @param {Node} node
+ * @return {Node}
+ */
+var cloneGraph = function(node) {
+    // Handle edge case of empty graph
+    if (!node) return null;
+    
+    // Map to store the cloned nodes
+    // Key: original node value, Value: cloned node
+    const visited = new Map();
+    
+    function dfs(node) {
+        // If we've already cloned this node, return the clone
+        if (visited.has(node.val)) {
+            return visited.get(node.val);
+        }
+        
+        // Create a new node with the same value
+        const clone = new Node(node.val);
+        
+        // Add it to visited map before DFS to handle cycles
+        visited.set(node.val, clone);
+        
+        // Clone all neighbors
+        for (let neighbor of node.neighbors) {
+            clone.neighbors.push(dfs(neighbor));
+        }
+        
+        return clone;
+    }
+    
+    return dfs(node);
+};
+
+
+/**
+ * @param {number} numCourses
+ * @param {number[][]} prerequisites
+ * @return {boolean}
+ */
+var canFinish = function(numCourses, prerequisites) {
+    // Create adjacency list to represent the graph
+    const graph = Array(numCourses).fill().map(() => []);
+    // Track in-degree for each node (course)
+    const inDegree = Array(numCourses).fill(0);
+    
+    // Build the graph and count in-degrees
+    for (const [course, prereq] of prerequisites) {
+        graph[prereq].push(course);
+        inDegree[course]++;
+    }
+    
+    // Queue for courses that have no prerequisites (in-degree = 0)
+    const queue = [];
+    
+    // Add all courses with no prerequisites to queue
+    for (let i = 0; i < numCourses; i++) {
+        if (inDegree[i] === 0) {
+            queue.push(i);
+        }
+    }
+    
+    // Counter for completed courses
+    let completed = 0;
+    
+    // Process the queue (topological sort)
+    while (queue.length > 0) {
+        const current = queue.shift();
+        completed++;
+        
+        // For each course that depends on current course
+        for (const nextCourse of graph[current]) {
+            inDegree[nextCourse]--;
+            
+            // If all prerequisites are completed for this course
+            if (inDegree[nextCourse] === 0) {
+                queue.push(nextCourse);
+            }
+        }
+    }
+    
+    // If we completed all courses, there's no cycle
+    return completed === numCourses;
+};

@@ -457,3 +457,53 @@ class Solution:
 # root.left.right = TreeNode(3)
 # solution = Solution()
 # print(solution.getMinimumDifference(root))  # Output: 1
+
+
+
+
+from collections import defaultdict, deque
+
+class Solution:
+    def findOrder(self, numCourses, prerequisites):
+        """
+        Returns the ordering of courses you should take to finish all courses.
+        
+        Args:
+        numCourses (int): The total number of courses.
+        prerequisites (list[list[int]]): The prerequisites for each course.
+        
+        Returns:
+        list[int]: The ordering of courses. If it's impossible to finish all courses, returns an empty list.
+        """
+        
+        # Create a graph and in-degree map
+        graph = defaultdict(list)
+        in_degree = {i: 0 for i in range(numCourses)}
+        
+        # Build the graph and in-degree map
+        for course, prerequisite in prerequisites:
+            graph[prerequisite].append(course)
+            in_degree[course] += 1
+        
+        # Initialize a queue with courses that have no prerequisites
+        queue = deque([course for course in in_degree if in_degree[course] == 0])
+        
+        # Initialize the result list
+        result = []
+        
+        # Perform DFS
+        while queue:
+            course = queue.popleft()
+            result.append(course)
+            
+            # Decrease the in-degree of neighboring courses
+            for neighbor in graph[course]:
+                in_degree[neighbor] -= 1
+                if in_degree[neighbor] == 0:
+                    queue.append(neighbor)
+        
+        # If the result list has the correct length, return it
+        if len(result) == numCourses:
+            return result
+        else:
+            return []
