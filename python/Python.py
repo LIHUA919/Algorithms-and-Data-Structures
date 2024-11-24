@@ -1271,3 +1271,1065 @@ class Solution:
         # Return the final maximized capital
         return w
 
+
+import heapq
+
+class Solution:
+    def kSmallestPairs(self, nums1, nums2, k):
+        if not nums1 or not nums2:
+            return []
+
+        # Min-heap to store (sum, index in nums1, index in nums2)
+        min_heap = []
+        for i in range(min(len(nums1), k)):  # Only need the first k pairs
+            heapq.heappush(min_heap, (nums1[i] + nums2[0], i, 0))
+
+        result = []
+        while k > 0 and min_heap:
+            sum, i, j = heapq.heappop(min_heap)
+            result.append((nums1[i], nums2[j]))
+            k -= 1
+            if j + 1 < len(nums2):
+                heapq.heappush(min_heap, (nums1[i] + nums2[j + 1], i, j + 1))
+
+        return result
+
+
+
+import heapq
+
+class MedianFinder:
+
+    def __init__(self):
+        self.max_heap = []
+        self.min_heap = []
+
+    def addNum(self, num: int) -> None:
+        if not self.max_heap or num <= -self.max_heap[0]:
+            heapq.heappush(self.max_heap, -num)
+        else:
+            heapq.heappush(self.min_heap, num)
+
+        if len(self.max_heap) > len(self.min_heap) + 1:
+            heapq.heappush(self.min_heap, -heapq.heappop(self.max_heap))
+        elif len(self.min_heap) > len(self.max_heap):
+            heapq.heappush(self.max_heap, -heapq.heappop(self.min_heap))
+
+    def findMedian(self) -> float:
+        if len(self.max_heap) == len(self.min_heap):
+            return (-self.max_heap[0] + self.min_heap[0]) / 2
+        else:
+            return -self.max_heap[0]
+        
+
+
+class Solution:
+    def addBinary(self, a: str, b: str) -> str:
+        result = ''
+        carry = 0
+        i, j = len(a) - 1, len(b) - 1
+
+        while i >= 0 or j >= 0 or carry:
+            if i >= 0:
+                carry += int(a[i])
+                i -= 1
+            if j >= 0:
+                carry += int(b[j])
+                j -= 1
+            result = str(carry % 2) + result
+            carry //= 2
+
+        return result
+    
+
+class Solution:
+    def reverseBits(self, n: int) -> int:
+        result = 0
+        for _ in range(32):
+            result = (result << 1) | (n & 1)
+            n >>= 1
+        return result
+    
+
+class Solution:
+    def hammingWeight(self, n: int) -> int:
+        return n.bit_count()
+    
+
+class Solution:
+    def singleNumber(self, nums: List[int]) -> int:
+        result = 0
+        for num in nums:
+            result ^= num
+        return result
+    
+
+class Solution:
+    def singleNumber(self, nums: List[int]) -> int:
+        ones = twos = 0
+        for num in nums:
+            twos |= ones & num
+            ones ^= num
+            threes = ones & twos
+            ones &= ~threes
+            twos &= ~threes
+        return ones
+    
+
+
+class Solution:
+    def rangeBitwiseAnd(self, left: int, right: int) -> int:
+        shift = 0
+        while left < right:
+            left >>= 1
+            right >>= 1
+            shift += 1
+        return left << shift
+    
+
+class Solution:
+    def isPalindrome(self, x: int) -> bool:
+        if x < 0:
+            return False
+        return str(x) == str(x)[::-1]
+    
+
+
+
+
+class Solution:
+    def plusOne(self, digits):
+        n = len(digits)
+
+        # Process digits from the least significant to the most significant
+        for i in range(n - 1, -1, -1):
+            digits[i] += 1
+            if digits[i] < 10:
+                return digits
+            digits[i] = 0  # Reset to 0 and carry over
+
+        # If all digits were 9, we need to add a leading 1
+        return [1] + digits
+
+
+class Solution:
+    def trailingZeroes(self, n):
+        count = 0
+        while n >= 5:
+            n //= 5
+            count += n
+        return count
+
+
+class Solution:
+    def mySqrt(self, x):
+        if x == 0:
+            return 0
+
+        left, right = 1, x  # Start the binary search range
+        while left <= right:
+            mid = left + (right - left) // 2
+            if mid * mid == x:  # Perfect square
+                return mid
+            elif mid * mid < x:  # Search on the right
+                left = mid + 1
+            else:  # Search on the left
+                right = mid - 1
+        return right  # 'right' points to the integer square root
+
+
+
+class Solution:
+    def myPow(self, x, n):
+        if n == 0:
+            return 1  # Any number to the power 0 is 1
+        if n < 0:
+            x = 1 / x  # Invert x for negative exponents
+            n = -n
+
+        result = 1
+        current_product = x
+
+        while n > 0:
+            if n % 2 == 1:  # If n is odd, include current_product in the result
+                result *= current_product
+            current_product *= current_product  # Square the current product
+            n //= 2  # Reduce n by half
+
+        return result
+
+from collections import defaultdict
+from math import gcd
+
+class Solution:
+    def maxPoints(self, points):
+        if len(points) <= 2:
+            return len(points)
+
+        def get_slope(p1, p2):
+            dx = p2[0] - p1[0]
+            dy = p2[1] - p1[1]
+            if dx == 0:  # Vertical line
+                return ('inf', 0)
+            if dy == 0:  # Horizontal line
+                return (0, 'inf')
+            d = gcd(dx, dy)  # Reduce fraction
+            return (dy // d, dx // d)
+
+        max_points = 0
+        for i, p1 in enumerate(points):
+            slopes = defaultdict(int)
+            overlaps = 0
+            current_max = 0
+            for j, p2 in enumerate(points):
+                if i == j:
+                    continue
+                if p1 == p2:
+                    overlaps += 1
+                else:
+                    slope = get_slope(p1, p2)
+                    slopes[slope] += 1
+                    current_max = max(current_max, slopes[slope])
+            max_points = max(max_points, current_max + overlaps + 1)
+
+        return max_points
+
+
+class Solution:
+    def climbStairs(self, n):
+        if n <= 1:
+            return 1
+        
+        # Start with the base cases
+        prev2, prev1 = 1, 1
+        
+        # Iteratively compute ways
+        for _ in range(2, n + 1):
+            curr = prev1 + prev2
+            prev2, prev1 = prev1, curr
+        
+        return prev1
+
+# Examples to test the solution
+solution = Solution()
+
+# Example 1
+n = 2
+print(f"Number of ways to climb {n} steps: {solution.climbStairs(n)}")
+# Output: 2
+# Explanation:
+# 1. 1 step + 1 step
+# 2. 2 steps
+
+# Example 2
+n = 3
+print(f"Number of ways to climb {n} steps: {solution.climbStairs(n)}")
+# Output: 3
+# Explanation:
+# 1. 1 step + 1 step + 1 step
+# 2. 1 step + 2 steps
+# 3. 2 steps + 1 step
+
+# Example 3
+n = 5
+print(f"Number of ways to climb {n} steps: {solution.climbStairs(n)}")
+# Output: 8
+# Explanation:
+# 1. 1 step + 1 step + 1 step + 1 step + 1 step
+# 2. 1 step + 1 step + 1 step + 2 steps
+# 3. 1 step + 1 step + 2 steps + 1 step
+# 4. 1 step + 2 steps + 1 step + 1 step
+# 5. 2 steps + 1 step + 1 step + 1 step
+# 6. 1 step + 2 steps + 2 steps
+# 7. 2 steps + 1 step + 2 steps
+# 8. 2 steps + 2 steps + 1 step
+
+
+
+class Solution:
+    def rob(self, nums):
+        if not nums:
+            return 0
+        if len(nums) == 1:
+            return nums[0]
+
+        prev2, prev1 = 0, nums[0]  # Initialize rob(i-2) and rob(i-1)
+
+        for i in range(1, len(nums)):
+            current = max(nums[i] + prev2, prev1)
+            prev2, prev1 = prev1, current
+
+        return prev1
+
+# Examples to test the solution
+solution = Solution()
+
+# Example 1
+nums = [1, 2, 3, 1]
+print(f"Max money that can be robbed from {nums}: {solution.rob(nums)}")
+# Output: 4
+# Explanation:
+# Rob house 1 (1) and house 3 (3), total = 1 + 3 = 4.
+
+# Example 2
+nums = [2, 7, 9, 3, 1]
+print(f"Max money that can be robbed from {nums}: {solution.rob(nums)}")
+# Output: 12
+# Explanation:
+# Rob house 1 (2), house 3 (9), and house 5 (1), total = 2 + 9 + 1 = 12.
+
+# Example 3
+nums = [5]
+print(f"Max money that can be robbed from {nums}: {solution.rob(nums)}")
+# Output: 5
+# Explanation:
+# Only one house to rob.
+
+# Example 4
+nums = [10, 20, 30]
+print(f"Max money that can be robbed from {nums}: {solution.rob(nums)}")
+# Output: 40
+# Explanation:
+# Rob house 1 (10) and house 3 (30), total = 10 + 30 = 40.
+
+# Example 5
+nums = []
+print(f"Max money that can be robbed from {nums}: {solution.rob(nums)}")
+# Output: 0
+# Explanation:
+# No houses to rob.
+
+
+class Solution:
+    def wordBreak(self, s, wordDict):
+        word_set = set(wordDict)  # Convert wordDict to a set for fast lookup
+        n = len(s)
+        dp = [False] * (n + 1)
+        dp[0] = True  # Base case: empty string can be segmented
+
+        for i in range(1, n + 1):
+            for j in range(i):
+                if dp[j] and s[j:i] in word_set:
+                    dp[i] = True
+                    break
+
+        return dp[n]
+
+# Examples
+solution = Solution()
+
+# Example 1
+s = "leetcode"
+wordDict = ["leet", "code"]
+print(f"Can '{s}' be segmented? {solution.wordBreak(s, wordDict)}")
+# Output: True
+
+# Example 2
+s = "applepenapple"
+wordDict = ["apple", "pen"]
+print(f"Can '{s}' be segmented? {solution.wordBreak(s, wordDict)}")
+# Output: True
+
+# Example 3
+s = "catsandog"
+wordDict = ["cats", "dog", "sand", "and", "cat"]
+print(f"Can '{s}' be segmented? {solution.wordBreak(s, wordDict)}")
+# Output: False
+
+
+
+class Solution:
+    def coinChange(self, coins, amount):
+        # Initialize the dp array with infinity for all amounts
+        dp = [float('inf')] * (amount + 1)
+        dp[0] = 0  # Base case: no coins needed to make amount 0
+
+        # Iterate over all amounts
+        for i in range(1, amount + 1):
+            for coin in coins:
+                if i - coin >= 0:  # If the amount is valid after subtracting the coin
+                    dp[i] = min(dp[i], dp[i - coin] + 1)
+
+        return dp[amount] if dp[amount] != float('inf') else -1
+
+
+# Examples
+solution = Solution()
+
+# Example 1
+coins = [1, 2, 5]
+amount = 11
+print(f"Fewest coins to make {amount} with {coins}: {solution.coinChange(coins, amount)}")
+# Output: 3
+
+# Example 2
+coins = [2]
+amount = 3
+print(f"Fewest coins to make {amount} with {coins}: {solution.coinChange(coins, amount)}")
+# Output: -1
+
+# Example 3
+coins = [1]
+amount = 0
+print(f"Fewest coins to make {amount} with {coins}: {solution.coinChange(coins, amount)}")
+# Output: 0
+
+# Example 4
+coins = [186, 419, 83, 408]
+amount = 6249
+print(f"Fewest coins to make {amount} with {coins}: {solution.coinChange(coins, amount)}")
+# Output: 20
+
+
+# Dynamic Programming Solution
+class Solution:
+    def lengthOfLIS(self, nums):
+        n = len(nums)
+        dp = [1] * n  # Initialize DP array with 1 (each element is an LIS of length 1)
+
+        for i in range(1, n):
+            for j in range(i):
+                if nums[j] < nums[i]:  # Update dp[i] if nums[i] can extend LIS ending at nums[j]
+                    dp[i] = max(dp[i], dp[j] + 1)
+
+        return max(dp)  # The LIS is the maximum value in dp
+
+# Examples
+solution = Solution()
+
+# Example 1
+nums = [10, 9, 2, 5, 3, 7, 101, 18]
+print(f"LIS of {nums}: {solution.lengthOfLIS(nums)}")  # Output: 4
+
+# Example 2
+nums = [0, 1, 0, 3, 2, 3]
+print(f"LIS of {nums}: {solution.lengthOfLIS(nums)}")  # Output: 4
+
+# Example 3
+nums = [7, 7, 7, 7, 7, 7, 7]
+print(f"LIS of {nums}: {solution.lengthOfLIS(nums)}")  # Output: 1
+
+
+class Solution:
+    def minimumTotal(self, triangle):
+        # Start from the second-to-last row and move upwards
+        for row in range(len(triangle) - 2, -1, -1):
+            for col in range(len(triangle[row])):
+                # Update each element with the minimum path sum
+                triangle[row][col] += min(triangle[row + 1][col], triangle[row + 1][col + 1])
+
+        # The top element contains the minimum path sum
+        return triangle[0][0]
+
+# Examples
+solution = Solution()
+
+# Example 1
+triangle = [[2],[3,4],[6,5,7],[4,1,8,3]]
+print(f"Minimum path sum: {solution.minimumTotal(triangle)}")
+# Output: 11
+
+# Example 2
+triangle = [[-10]]
+print(f"Minimum path sum: {solution.minimumTotal(triangle)}")
+# Output: -10
+
+
+class Solution:
+    def minPathSum(self, grid):
+        m, n = len(grid), len(grid[0])
+
+        # Update the grid in-place to store the minimum path sums
+        for i in range(m):
+            for j in range(n):
+                if i == 0 and j == 0:
+                    continue  # Top-left corner
+                elif i == 0:
+                    grid[i][j] += grid[i][j - 1]  # First row
+                elif j == 0:
+                    grid[i][j] += grid[i - 1][j]  # First column
+                else:
+                    grid[i][j] += min(grid[i - 1][j], grid[i][j - 1])  # Transition
+
+        return grid[m - 1][n - 1]
+
+
+# Examples
+solution = Solution()
+
+# Example 1
+grid = [[1, 3, 1], [1, 5, 1], [4, 2, 1]]
+print(f"Minimum path sum: {solution.minPathSum(grid)}")
+# Output: 7
+
+# Example 2
+grid = [[1, 2, 3], [4, 5, 6]]
+print(f"Minimum path sum: {solution.minPathSum(grid)}")
+# Output: 12
+
+
+
+class Solution:
+    def uniquePathsWithObstacles(self, grid):
+        m, n = len(grid), len(grid[0])
+
+        # If the starting or ending cell is an obstacle, return 0
+        if grid[0][0] == 1 or grid[m-1][n-1] == 1:
+            return 0
+
+        # Initialize the DP table
+        dp = [[0] * n for _ in range(m)]
+        dp[0][0] = 1  # Start point
+
+        # Fill the DP table
+        for i in range(m):
+            for j in range(n):
+                if grid[i][j] == 1:
+                    dp[i][j] = 0  # Obstacle
+                else:
+                    if i > 0:
+                        dp[i][j] += dp[i-1][j]  # From above
+                    if j > 0:
+                        dp[i][j] += dp[i][j-1]  # From the left
+
+        return dp[m-1][n-1]
+
+
+# Examples
+solution = Solution()
+
+# Example 1
+grid = [[0, 0, 0], [0, 1, 0], [0, 0, 0]]
+print(f"Unique paths: {solution.uniquePathsWithObstacles(grid)}")  # Output: 2
+
+# Example 2
+grid = [[0, 1], [0, 0]]
+print(f"Unique paths: {solution.uniquePathsWithObstacles(grid)}")  # Output: 1
+
+
+# Expand Around Center Solution
+class Solution:
+    def longestPalindrome(self, s):
+        def expandAroundCenter(left, right):
+            while left >= 0 and right < len(s) and s[left] == s[right]:
+                left -= 1
+                right += 1
+            return s[left + 1:right]
+
+        max_palindrome = ""
+        for i in range(len(s)):
+            palindrome1 = expandAroundCenter(i, i)  # Odd-length palindromes
+            palindrome2 = expandAroundCenter(i, i + 1)  # Even-length palindromes
+
+            if len(palindrome1) > len(max_palindrome):
+                max_palindrome = palindrome1
+            if len(palindrome2) > len(max_palindrome):
+                max_palindrome = palindrome2
+
+        return max_palindrome
+
+
+# Examples
+solution = Solution()
+
+# Example 1
+s = "babad"
+print(f"Longest palindromic substring of '{s}': {solution.longestPalindrome(s)}")
+# Output: "bab" or "aba"
+
+# Example 2
+s = "cbbd"
+print(f"Longest palindromic substring of '{s}': {solution.longestPalindrome(s)}")
+# Output: "bb"
+
+# Example 3
+s = "a"
+print(f"Longest palindromic substring of '{s}': {solution.longestPalindrome(s)}")
+# Output: "a"
+
+# Example 4
+s = "ac"
+print(f"Longest palindromic substring of '{s}': {solution.longestPalindrome(s)}")
+# Output: "a" or "c"
+
+
+class Solution:
+    def isInterleave(self, s1, s2, s3):
+        m, n = len(s1), len(s2)
+        
+        # If lengths don't match, s3 cannot be an interleaving
+        if m + n != len(s3):
+            return False
+
+        # Initialize DP table
+        dp = [[False] * (n + 1) for _ in range(m + 1)]
+        dp[0][0] = True  # Base case
+
+        # Fill DP table
+        for i in range(m + 1):
+            for j in range(n + 1):
+                if i > 0 and s1[i - 1] == s3[i + j - 1]:
+                    dp[i][j] |= dp[i - 1][j]  # Match character from s1
+                if j > 0 and s2[j - 1] == s3[i + j - 1]:
+                    dp[i][j] |= dp[i][j - 1]  # Match character from s2
+
+        return dp[m][n]
+
+
+# Examples
+solution = Solution()
+
+# Example 1
+s1 = "aab"
+s2 = "axy"
+s3 = "aaxaby"
+print(f"Is '{s3}' an interleaving of '{s1}' and '{s2}'? {solution.isInterleave(s1, s2, s3)}")
+# Output: True
+
+# Example 2
+s1 = "abc"
+s2 = "def"
+s3 = "abdecf"
+print(f"Is '{s3}' an interleaving of '{s1}' and '{s2}'? {solution.isInterleave(s1, s2, s3)}")
+# Output: False
+
+# Example 3
+s1 = ""
+s2 = "abc"
+s3 = "abc"
+print(f"Is '{s3}' an interleaving of '{s1}' and '{s2}'? {solution.isInterleave(s1, s2, s3)}")
+# Output: True
+
+
+class Solution:
+    def minDistance(self, word1, word2):
+        m, n = len(word1), len(word2)
+
+        # Initialize DP table
+        dp = [[0] * (n + 1) for _ in range(m + 1)]
+
+        # Base cases
+        for i in range(m + 1):
+            dp[i][0] = i  # Deleting all characters from word1
+        for j in range(n + 1):
+            dp[0][j] = j  # Inserting all characters into word1
+
+        # Fill the DP table
+        for i in range(1, m + 1):
+            for j in range(1, n + 1):
+                if word1[i - 1] == word2[j - 1]:  # Characters match
+                    dp[i][j] = dp[i - 1][j - 1]
+                else:  # Characters don't match
+                    dp[i][j] = 1 + min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1])
+
+        return dp[m][n]
+
+
+# Examples
+solution = Solution()
+
+# Example 1
+word1 = "horse"
+word2 = "ros"
+print(f"Edit distance between '{word1}' and '{word2}': {solution.minDistance(word1, word2)}")
+# Output: 3
+
+# Example 2
+word1 = "intention"
+word2 = "execution"
+print(f"Edit distance between '{word1}' and '{word2}': {solution.minDistance(word1, word2)}")
+# Output: 5
+
+
+
+class Solution:
+    def maxProfit(self, prices):
+        if not prices or len(prices) < 2:
+            return 0
+
+        n = len(prices)
+
+        # Calculate the max profit for the first transaction from left to right
+        left = [0] * n
+        min_price = prices[0]
+        for i in range(1, n):
+            min_price = min(min_price, prices[i])
+            left[i] = max(left[i - 1], prices[i] - min_price)
+
+        # Calculate the max profit for the second transaction from right to left
+        right = [0] * n
+        max_price = prices[-1]
+        for i in range(n - 2, -1, -1):
+            max_price = max(max_price, prices[i])
+            right[i] = max(right[i + 1], max_price - prices[i])
+
+        # Combine the results from left and right
+        max_profit = 0
+        for i in range(n):
+            max_profit = max(max_profit, left[i] + right[i])
+
+        return max_profit
+
+# Examples
+solution = Solution()
+
+# Example 1
+prices = [3, 3, 5, 0, 0, 3, 1, 4]
+print(f"Maximum profit: {solution.maxProfit(prices)}")  # Output: 6
+
+# Example 2
+prices = [1, 2, 3, 4, 5]
+print(f"Maximum profit: {solution.maxProfit(prices)}")  # Output: 4
+
+# Example 3
+prices = [7, 6, 4, 3, 1]
+print(f"Maximum profit: {solution.maxProfit(prices)}")  # Output: 0
+
+
+
+class Solution:
+    def maxProfit(self, k, prices):
+        n = len(prices)
+        if not prices or k == 0:
+            return 0
+
+        # If k >= n // 2, it's equivalent to unlimited transactions
+        if k >= n // 2:
+            return sum(max(prices[i + 1] - prices[i], 0) for i in range(n - 1))
+
+        # Initialize DP table
+        dp = [[0] * n for _ in range(k + 1)]
+
+        for i in range(1, k + 1):
+            maxDiff = -prices[0]  # Maximum difference for current transaction
+            for j in range(1, n):
+                dp[i][j] = max(dp[i][j - 1], prices[j] + maxDiff)
+                maxDiff = max(maxDiff, dp[i - 1][j] - prices[j])
+
+        return dp[k][n - 1]
+
+
+# Examples
+solution = Solution()
+
+# Example 1
+k = 2
+prices = [2, 4, 1]
+print(f"Maximum profit with {k} transactions: {solution.maxProfit(k, prices)}")  # Output: 2
+
+# Example 2
+k = 2
+prices = [3, 2, 6, 5, 0, 3]
+print(f"Maximum profit with {k} transactions: {solution.maxProfit(k, prices)}")  # Output: 7
+
+
+
+class Solution:
+    def maximalSquare(self, matrix):
+        if not matrix or not matrix[0]:
+            return 0
+
+        m, n = len(matrix), len(matrix[0])
+        dp = [[0] * n for _ in range(m)]
+        max_side = 0
+
+        for i in range(m):
+            for j in range(n):
+                if matrix[i][j] == '1':
+                    if i == 0 or j == 0:
+                        dp[i][j] = 1
+                    else:
+                        dp[i][j] = min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]) + 1
+                    max_side = max(max_side, dp[i][j])
+
+        return max_side * max_side
+
+
+# Examples
+solution = Solution()
+
+# Example 1
+matrix = [
+    ["1", "0", "1", "0", "0"],
+    ["1", "0", "1", "1", "1"],
+    ["1", "1", "1", "1", "1"],
+    ["1", "0", "0", "1", "0"]
+]
+print(f"Largest square area: {solution.maximalSquare(matrix)}")  # Output: 4
+
+# Example 2
+matrix = [
+    ["0", "1"],
+    ["1", "0"]
+]
+print(f"Largest square area: {solution.maximalSquare(matrix)}")  # Output: 1
+
+# Example 3
+matrix = [
+    ["0"]
+]
+print(f"Largest square area: {solution.maximalSquare(matrix)}")  # Output: 0
+
+
+class Solution:
+    def wordPattern(self, pattern, s):
+        words = s.split()  # Split the string into words
+
+        # If lengths don't match, return False
+        if len(pattern) != len(words):
+            return False
+
+        char_to_word = {}
+        word_to_char = {}
+
+        for char, word in zip(pattern, words):
+            if char in char_to_word:
+                if char_to_word[char] != word:
+                    return False
+            else:
+                char_to_word[char] = word
+
+            if word in word_to_char:
+                if word_to_char[word] != char:
+                    return False
+            else:
+                word_to_char[word] = char
+
+        return True
+
+
+# Examples
+solution = Solution()
+
+# Example 1
+pattern = "abba"
+s = "dog cat cat dog"
+print(f"Does '{s}' follow pattern '{pattern}'? {solution.wordPattern(pattern, s)}")  # Output: True
+
+# Example 2
+pattern = "abba"
+s = "dog cat cat fish"
+print(f"Does '{s}' follow pattern '{pattern}'? {solution.wordPattern(pattern, s)}")  # Output: False
+
+# Example 3
+pattern = "aaaa"
+s = "dog cat cat dog"
+print(f"Does '{s}' follow pattern '{pattern}'? {solution.wordPattern(pattern, s)}")  # Output: False
+
+# Example 4
+pattern = "abba"
+s = "dog dog dog dog"
+print(f"Does '{s}' follow pattern '{pattern}'? {solution.wordPattern(pattern, s)}")  # Output: False
+
+
+
+class Solution:
+    def intToRoman(self, num):
+        # Define the Roman numeral mappings
+        values = [
+            (1000, 'M'),
+            (900, 'CM'),
+            (500, 'D'),
+            (400, 'CD'),
+            (100, 'C'),
+            (90, 'XC'),
+            (50, 'L'),
+            (40, 'XL'),
+            (10, 'X'),
+            (9, 'IX'),
+            (5, 'V'),
+            (4, 'IV'),
+            (1, 'I')
+        ]
+
+        result = []
+        for value, symbol in values:
+            # Append the symbol for as many times as value fits into num
+            while num >= value:
+                result.append(symbol)
+                num -= value
+
+        return ''.join(result)
+
+
+# Examples
+solution = Solution()
+
+# Example 1
+num = 58
+print(f"Roman numeral for {num}: {solution.intToRoman(num)}")  # Output: "LVIII"
+
+# Example 2
+num = 1994
+print(f"Roman numeral for {num}: {solution.intToRoman(num)}")  # Output: "MCMXCIV"
+
+# Example 3
+num = 9
+print(f"Roman numeral for {num}: {solution.intToRoman(num)}")  # Output: "IX"
+
+class Solution:
+    def lengthOfLastWord(self, s):
+        length = 0
+        i = len(s) - 1
+
+        # Skip trailing spaces
+        while i >= 0 and s[i] == ' ':
+            i -= 1
+
+        # Count the length of the last word
+        while i >= 0 and s[i] != ' ':
+            length += 1
+            i -= 1
+
+        return length
+
+
+# Examples
+solution = Solution()
+
+# Example 1
+s = "Hello World"
+print(f"Length of last word in '{s}': {solution.lengthOfLastWord(s)}")  # Output: 5
+
+# Example 2
+s = "   fly me   to   the moon  "
+print(f"Length of last word in '{s}': {solution.lengthOfLastWord(s)}")  # Output: 4
+
+# Example 3
+s = "luffy is still joyboy"
+print(f"Length of last word in '{s}': {solution.lengthOfLastWord(s)}")  # Output: 6
+
+
+
+
+
+class Solution:
+    def longestCommonPrefix(self, strs):
+        if not strs:
+            return ""
+
+        # Start with the first string as the prefix
+        prefix = strs[0]
+
+        for string in strs[1:]:
+            # Reduce the prefix until it matches the current string
+            while string[:len(prefix)] != prefix:
+                prefix = prefix[:-1]
+                if not prefix:
+                    return ""
+
+        return prefix
+
+
+# Examples
+solution = Solution()
+
+# Example 1
+strs = ["flower", "flow", "flight"]
+print(f"Longest common prefix: '{solution.longestCommonPrefix(strs)}'")  # Output: "fl"
+
+# Example 2
+strs = ["dog", "racecar", "car"]
+print(f"Longest common prefix: '{solution.longestCommonPrefix(strs)}'")  # Output: ""
+
+# Example 3
+strs = ["interview", "interval", "internet"]
+print(f"Longest common prefix: '{solution.longestCommonPrefix(strs)}'")  # Output: "inte"
+
+
+class Solution:
+    def reverseWords(self, s):
+        # Split the string into words, reverse them, and join with a single space
+        return ' '.join(s.split()[::-1])
+
+
+# Examples
+solution = Solution()
+
+# Example 1
+s = "the sky is blue"
+print(f"Reversed words: '{solution.reverseWords(s)}'")  # Output: "blue is sky the"
+
+# Example 2
+s = "  hello world  "
+print(f"Reversed words: '{solution.reverseWords(s)}'")  # Output: "world hello"
+
+# Example 3
+s = "a good   example"
+print(f"Reversed words: '{solution.reverseWords(s)}'")  # Output: "example good a"
+
+
+
+class Solution:
+    def convert(self, s, numRows):
+        if numRows == 1 or numRows >= len(s):
+            return s
+
+        # Initialize a list for each row
+        rows = [''] * numRows
+        current_row = 0
+        going_down = False
+
+        for char in s:
+            rows[current_row] += char
+            # Change direction at the first or last row
+            if current_row == 0 or current_row == numRows - 1:
+                going_down = not going_down
+            current_row += 1 if going_down else -1
+
+        # Concatenate all rows
+        return ''.join(rows)
+
+
+# Examples
+solution = Solution()
+
+# Example 1
+s = "PAYPALISHIRING"
+numRows = 3
+print(f"Converted string: {solution.convert(s, numRows)}")  # Output: "PAHNAPLSIIGYIR"
+
+# Example 2
+s = "PAYPALISHIRING"
+numRows = 4
+print(f"Converted string: {solution.convert(s, numRows)}")  # Output: "PINALSIGYAHRPI"
+
+# Example 3
+s = "A"
+numRows = 1
+print(f"Converted string: {solution.convert(s, numRows)}")  # Output: "A"
+
+
+
+class Solution:
+    def strStr(self, haystack, needle):
+        # Sliding Window Implementation
+        if not needle:
+            return 0
+
+        needle_len = len(needle)
+        haystack_len = len(haystack)
+
+        for i in range(haystack_len - needle_len + 1):
+            if haystack[i:i + needle_len] == needle:
+                return i
+
+        return -1
+
+# Examples
+solution = Solution()
+
+# Example 1
+haystack = "sadbutsad"
+needle = "sad"
+print(f"First occurrence of '{needle}' in '{haystack}': {solution.strStr(haystack, needle)}")  # Output: 0
+
+# Example 2
+haystack = "leetcode"
+needle = "leeto"
+print(f"First occurrence of '{needle}' in '{haystack}': {solution.strStr(haystack, needle)}")  # Output: -1
+
+# Example 3
+haystack = "hello"
+needle = ""
+print(f"First occurrence of '{needle}' in '{haystack}': {solution.strStr(haystack, needle)}")  # Output: 0
