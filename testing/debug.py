@@ -1,11 +1,13 @@
 import subprocess
 
 def run_program(command):
+
     """
     运行一个命令并检查是否成功执行。
 
     Args:
         command (str): 要执行的命令。
+
 
     Returns:
         bool: 如果执行成功返回 True，否则返回 False。
@@ -17,6 +19,8 @@ def run_program(command):
         # 输出命令执行的结果
         print("Command Output:")
         print(result.stdout)
+
+
         
         # 检查执行状态码
         if result.returncode == 0:
@@ -30,6 +34,8 @@ def run_program(command):
     except Exception as e:
         print(f"An error occurred: {e}")
         return False
+
+        
 
 if __name__ == "__main__":
     # 要检查的命令
