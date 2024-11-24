@@ -1224,4 +1224,50 @@ class Solution:
             else:
                 right = mid - 1
         return left
+    
+
+
+import heapq
+
+class Solution:
+    def findMaximizedCapital(self, k, w, profits, capital):
+        """
+        Find the maximum capital that can be obtained by selecting at most k distinct projects.
+
+        Args:
+        k (int): The maximum number of distinct projects that can be selected.
+        w (int): The initial capital.
+        profits (list[int]): A list of pure profits for each project.
+        capital (list[int]): A list of minimum capital requirements for each project.
+
+        Returns:
+        int: The final maximized capital.
+        """
+        # Combine profits and capital into a list of tuples and sort by capital
+        projects = sorted(zip(capital, profits))
+
+        # Initialize a priority queue to store the projects that can be started
+        pq = []
+
+        # Initialize the index of the current project
+        i = 0
+
+        # Iterate over the projects
+        while k > 0:
+            # Add projects that can be started to the priority queue
+            while i < len(projects) and projects[i][0] <= w:
+                # Push the project's profit into the priority queue
+                heapq.heappush(pq, -projects[i][1])
+                i += 1
+
+            # If no projects can be started, break the loop
+            if not pq:
+                break
+
+            # Start the project with the highest profit
+            w += -heapq.heappop(pq)
+            k -= 1
+
+        # Return the final maximized capital
+        return w
 
