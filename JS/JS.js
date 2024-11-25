@@ -1098,3 +1098,5 @@ var maximalSquare = function(matrix) {
 
     return maxSquareLength * maxSquareLength;
 };
+
+
