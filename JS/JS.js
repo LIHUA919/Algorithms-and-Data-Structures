@@ -1328,10 +1328,14 @@ var uniquePathsWithObstacles = function(obstacleGrid) {
             }
         }
     }
+
+    
     
     // The answer is in the bottom-right corner
     return dp[m - 1][n - 1];
 };
+
+
 
 // Example usage
 const grid = [
