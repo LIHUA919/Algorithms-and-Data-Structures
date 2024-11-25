@@ -1164,3 +1164,59 @@ var maxProfit = function(prices) {
 
     return maxProfit;
 };
+
+
+# Creating a single file with the implementation of the solution and examples for the problem.
+
+code = """
+/**
+ * Function to calculate the minimum number of operations required to convert word1 to word2.
+ * @param {string} word1 - The first string.
+ * @param {string} word2 - The second string.
+ * @return {number} - The minimum number of operations required.
+ */
+var minDistance = function(word1, word2) {
+    const m = word1.length;
+    const n = word2.length;
+
+    // Create a DP table
+    const dp = Array(m + 1).fill(0).map(() => Array(n + 1).fill(0));
+
+    // Fill the base cases
+    for (let i = 0; i <= m; i++) dp[i][0] = i;
+    for (let j = 0; j <= n; j++) dp[0][j] = j;
+
+    // Fill the DP table
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (word1[i - 1] === word2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1];
+            } else {
+                dp[i][j] = 1 + Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]);
+            }
+        }
+    }
+
+    return dp[m][n];
+};
+
+// Example Usage:
+const word1 = "horse";
+const word2 = "ros";
+console.log("Minimum Operations to Convert:", minDistance(word1, word2)); // Output: 3
+
+const word3 = "intention";
+const word4 = "execution";
+console.log("Minimum Operations to Convert:", minDistance(word3, word4)); // Output: 5
+
+const word5 = "abc";
+const word6 = "yabd";
+console.log("Minimum Operations to Convert:", minDistance(word5, word6)); // Output: 2
+//"""
+
+//# Save the code to a JavaScript file
+file_path = "/mnt/data/MinDistanceOperations.js"
+with open(file_path, "w") as file:
+    file.write(code)
+
+file_path
