@@ -1100,3 +1100,33 @@ var maximalSquare = function(matrix) {
 };
 
 
+var maxProfit = function(k, prices) {
+    let n = prices.length;
+    if (n === 0 || k === 0) return 0;
+
+    // If k is greater than or equal to n/2, treat it as unlimited transactions
+    if (k >= Math.floor(n / 2)) {
+        let profit = 0;
+        for (let i = 1; i < n; i++) {
+            if (prices[i] > prices[i - 1]) {
+                profit += prices[i] - prices[i - 1];
+            }
+        }
+        return profit;
+    }
+
+    // Initialize DP arrays
+    let dpPrev = new Array(n).fill(0);
+    let dpCurr = new Array(n).fill(0);
+
+    for (let i = 1; i <= k; i++) {
+        let maxDiff = -prices[0];
+        for (let j = 1; j < n; j++) {
+            dpCurr[j] = Math.max(dpCurr[j - 1], prices[j] + maxDiff);
+            maxDiff = Math.max(maxDiff, dpPrev[j] - prices[j]);
+        }
+        dpPrev = dpCurr.slice(); // Update the previous transaction's state
+    }
+
+    return dpPrev[n - 1];
+};
