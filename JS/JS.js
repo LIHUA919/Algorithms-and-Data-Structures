@@ -1130,3 +1130,37 @@ var maxProfit = function(k, prices) {
 
     return dpPrev[n - 1];
 };
+
+
+
+var maxProfit = function(prices) {
+    if (prices.length < 2) return 0;
+
+    let n = prices.length;
+
+    // Arrays to store max profit up to day i and from day i
+    let leftProfit = new Array(n).fill(0);
+    let rightProfit = new Array(n).fill(0);
+
+    // Calculate leftProfit: max profit up to each day
+    let minPrice = prices[0];
+    for (let i = 1; i < n; i++) {
+        minPrice = Math.min(minPrice, prices[i]);
+        leftProfit[i] = Math.max(leftProfit[i - 1], prices[i] - minPrice);
+    }
+
+    // Calculate rightProfit: max profit from each day to the end
+    let maxPrice = prices[n - 1];
+    for (let i = n - 2; i >= 0; i--) {
+        maxPrice = Math.max(maxPrice, prices[i]);
+        rightProfit[i] = Math.max(rightProfit[i + 1], maxPrice - prices[i]);
+    }
+
+    // Combine the results
+    let maxProfit = 0;
+    for (let i = 0; i < n; i++) {
+        maxProfit = Math.max(maxProfit, leftProfit[i] + rightProfit[i]);
+    }
+
+    return maxProfit;
+};
