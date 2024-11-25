@@ -1294,6 +1294,9 @@ console.log(longestPalindrome(s));  // Output: "bab" or "aba"
 
 
 
+
+
+
 /**
  * @param {number[][]} obstacleGrid
  * @return {number}
@@ -1307,11 +1310,18 @@ var uniquePathsWithObstacles = function(obstacleGrid) {
         return 0;
     }
     
+
+
+
+
     // Create a 2D DP array to store the number of ways to reach each cell
     const dp = Array.from({ length: m }, () => Array(n).fill(0));
     
     // Start position
     dp[0][0] = 1;
+
+
+
     
     // Fill the DP table
     for (let i = 0; i < m; i++) {
@@ -1329,7 +1339,7 @@ var uniquePathsWithObstacles = function(obstacleGrid) {
         }
     }
 
-    
+
     
     // The answer is in the bottom-right corner
     return dp[m - 1][n - 1];
