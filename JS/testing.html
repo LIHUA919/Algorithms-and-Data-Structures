@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Longest Palindromic Substring</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        input, button { padding: 10px; margin: 5px 0; }
+        #result { margin-top: 20px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Find Longest Palindromic Substring</h1>
+    <input type="text" id="inputString" placeholder="Enter a string" value="babad">
+    <button onclick="findLongestPalindrome()">Find Palindrome</button>
+    <div id="result"></div>
+
+    <script>
+        function findLongestPalindrome() {
+            const s = document.getElementById('inputString').value;
+            let longest = '';
+
+            function expandAroundCenter(left, right) {
+                while (left >= 0 && right < s.length && s[left] === s[right]) {
+                    left--;
+                    right++;
+                }
+                return s.substring(left + 1, right);
+            }
+
+            for (let i = 0; i < s.length; i++) {
+                const oddPalindrome = expandAroundCenter(i, i);
+                const evenPalindrome = expandAroundCenter(i, i + 1);
+
+                if (oddPalindrome.length > longest.length) {
+                    longest = oddPalindrome;
+                }
+                if (evenPalindrome.length > longest.length) {
+                    longest = evenPalindrome;
+                }
+            }
+
+            document.getElementById('result').innerText = `Longest Palindromic Substring: ${longest}`;
+        }
+    </script>
+</body>
+</html>
