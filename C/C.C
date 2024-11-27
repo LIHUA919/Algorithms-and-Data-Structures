@@ -47,6 +47,11 @@ double* averageOfLevels(struct TreeNode* root, int* returnSize) {
 }
 
 
+
+
+
+
+
 /**
  * Definition for a binary tree node.
  * struct TreeNode {
@@ -99,6 +104,11 @@ int** levelOrder(struct TreeNode* root, int* returnSize, int** returnColumnSizes
     free(queue);
     return result;
 }
+
+
+
+
+
 
 
 /**
@@ -160,6 +170,10 @@ int** zigzagLevelOrder(struct TreeNode* root, int* returnSize, int** returnColum
     free(queue);
     return result;
 }
+
+
+
+
 
 /**
  * Definition for a binary tree node.
