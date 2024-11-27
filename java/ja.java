@@ -1,9 +1,11 @@
 import java.util.PriorityQueue;
 import java.util.Arrays;
 
+
 public class Solution {
     public int findMaximizedCapital(int k, int w, int[] profits, int[] capital) {
         int n = profits.length;
+
 
         // Combine projects into an array of [capital, profit]
         int[][] projects = new int[n][2];
@@ -12,6 +14,7 @@ public class Solution {
             projects[i][1] = profits[i];
         }
 
+
         // Sort projects by capital requirement
         Arrays.sort(projects, (a, b) -> Integer.compare(a[0], b[0]));
 
@@ -19,6 +22,7 @@ public class Solution {
         PriorityQueue<Integer> maxHeap = new PriorityQueue<>((a, b) -> Integer.compare(b, a));
 
         int i = 0;
+
 
         while (k > 0) {
             // Add all projects that can be started with current capital to the heap
@@ -32,10 +36,12 @@ public class Solution {
                 break;
             }
 
+
             // Pick the most profitable project
             w += maxHeap.poll();
             k--;
         }
+
 
         return w;
     }
