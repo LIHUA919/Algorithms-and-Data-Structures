@@ -2333,3 +2333,169 @@ print(f"First occurrence of '{needle}' in '{haystack}': {solution.strStr(haystac
 haystack = "hello"
 needle = ""
 print(f"First occurrence of '{needle}' in '{haystack}': {solution.strStr(haystack, needle)}")  # Output: 0
+
+
+
+
+class Solution:
+    def isInterleave(self, s1: str, s2: str, s3: str) -> bool:
+        # Basic length check
+        if len(s1) + len(s2) != len(s3):
+            return False
+        
+        # Create DP table
+        # dp[i][j] represents if first i chars of s1 and first j chars of s2 
+        # can form first (i+j) chars of s3
+        dp = [[False] * (len(s2) + 1) for _ in range(len(s1) + 1)]
+        
+        # Initialize base case
+        dp[0][0] = True
+        
+        # Fill first row (only s2 is used)
+        for j in range(1, len(s2) + 1):
+            dp[0][j] = dp[0][j-1] and s2[j-1] == s3[j-1]
+        
+        # Fill first column (only s1 is used)
+        for i in range(1, len(s1) + 1):
+            dp[i][0] = dp[i-1][0] and s1[i-1] == s3[i-1]
+        
+        # Fill the rest of the DP table
+        for i in range(1, len(s1) + 1):
+            for j in range(1, len(s2) + 1):
+                # Check if current character from s1 matches
+                if dp[i-1][j] and s1[i-1] == s3[i+j-1]:
+                    dp[i][j] = True
+                # Check if current character from s2 matches
+                elif dp[i][j-1] and s2[j-1] == s3[i+j-1]:
+                    dp[i][j] = True
+        
+        # Return final state
+        return dp[len(s1)][len(s2)]
+    
+
+
+
+
+class Solution:
+    def largestComponentSize(self, nums: List[int]) -> int:
+        def find(x):
+            if parent[x] != x:
+                parent[x] = find(parent[x])
+            return parent[x]
+        
+        def union(x, y):
+            px, py = find(x), find(y)
+            if px != py:
+                parent[px] = py
+                
+        # Find maximum number to determine the size of parent array
+        max_num = max(nums)
+        parent = list(range(max_num + 1))
+        
+        # Union numbers with common factors
+        for num in nums:
+            # Find factors from 2 to sqrt(num)
+            for factor in range(2, int(num**0.5) + 1):
+                if num % factor == 0:
+                    # Union the number with its factors
+                    union(num, factor)
+                    union(num, num // factor)
+        
+        # Count the size of each component
+        count = {}
+        max_component = 0
+        
+        for num in nums:
+            root = find(num)
+            count[root] = count.get(root, 0) + 1
+            max_component = max(max_component, count[root])
+        
+        return max_component
+    
+
+
+    class Solution:
+    def waysToFillArray(self, queries: List[List[int]]) -> List[int]:
+        def factorize(n):
+            # Prime factorization of a number
+            factors = {}
+            d = 2
+            while d * d <= n:
+                while n % d == 0:
+                    factors[d] = factors.get(d, 0) + 1
+                    n //= d
+                d += 1
+            if n > 1:
+                factors[n] = factors.get(n, 0) + 1
+            return factors
+
+        def count_ways(n, k):
+            # If k is 1, only one way to fill the array
+            if k == 1:
+                return 1
+            
+            # Prime factorize k
+            prime_factors = factorize(k)
+            
+            # Dynamic programming to compute combinations
+            MOD = 10**9 + 7
+            
+            # Total ways is product of ways for each prime factor
+            total_ways = 1
+            for prime, count in prime_factors.items():
+                # Ways to distribute 'count' prime factors in 'n' slots
+                # This is equivalent to stars and bars problem
+                total_ways *= comb(n + count - 1, count)
+                total_ways %= MOD
+            
+            return total_ways
+
+        # Combination with memoization
+        @lru_cache(None)
+        def comb(n, k):
+            MOD = 10**9 + 7
+            # Base cases
+            if k > n:
+                return 0
+            if k == 0 or k == n:
+                return 1
+            
+            return (comb(n-1, k-1) + comb(n-1, k)) % MOD
+
+        # Process each query
+        return [count_ways(n, k) for n, k in queries]
+    
+
+class Solution:
+    def kthFactor(self, n: int, k: int) -> int:
+        # List to store the factors of n
+        factors = []
+
+        # Find all factors of n
+        for i in range(1, n + 1):
+            if n % i == 0:
+                factors.append(i)
+
+        # Return the kth factor if it exists, otherwise return -1
+        return factors[k - 1] if k <= len(factors) else -1
+    
+class Solution:
+    def maxCoins(self, nums: list[int]) -> int:
+        # Add 1 to both ends of nums to handle boundary cases
+        nums = [1] + nums + [1]
+        n = len(nums)
+        
+        # DP table
+        dp = [[0] * n for _ in range(n)]
+        
+        # Fill the DP table
+        for length in range(2, n):  # Length of the range (start to end)
+            for i in range(n - length):  # Start index of the range
+                j = i + length  # End index of the range
+                for k in range(i + 1, j):  # k is the last balloon burst in range (i, j)
+                    dp[i][j] = max(dp[i][j], dp[i][k] + dp[k][j] + nums[i] * nums[k] * nums[j])
+        
+        # The result is stored in dp[0][n - 1]
+        return dp[0][n - 1]
+
+
