@@ -2521,6 +2521,13 @@ class Solution:
             heights.pop()  # Remove the sentinel value
             return max_area
         
+
+
+
+
+
+
+        
         for row in matrix:
             for col in range(cols):
                 # Update heights
