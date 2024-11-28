@@ -1554,3 +1554,25 @@ const board = [
 ];
 gameOfLife(board);
 console.log(board);  // Output: [[0, 0, 0], [1, 0, 1], [0, 1, 1], [0, 1, 0]];
+
+
+
+
+const isPrime = (x) => {
+    for (let i = 2; i * i <= x; ++i) {
+        if (x % i == 0) {
+            return false;
+        }
+    }
+    return true;
+}
+
+var countPrimes = function(n) {
+    let ans = 0;
+    for (let i = 2; i < n; ++i) {
+        ans += isPrime(i);
+    }
+    return ans;
+};
+
+
