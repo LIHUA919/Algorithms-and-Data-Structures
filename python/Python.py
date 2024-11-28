@@ -2578,3 +2578,33 @@ class Solution:
         mx, mn = max(nums), min(nums)
         return math.gcd(mx, mn)
 
+
+class Solution:
+    def waysToFillArray(self, queries: List[List[int]]) -> List[int]:
+        mod, max_n, max_m = 10**9 + 7, 10**4 + 14, 14
+        comb = [[0] * max_m for _ in range(max_n)]
+        comb[0][0] = 1
+
+        for i in range(1, max_n):
+            comb[i][0] = 1
+            for j in range(1, min(i + 1, max_m)):
+                comb[i][j] = (comb[i - 1][j - 1] + comb[i - 1][j]) % mod
+
+        ans = []
+        for n, k in queries:
+            i, tot = 2, 1
+            while i * i <= k:
+                if k % i == 0:
+                    cnt = 0
+                    while k % i == 0:
+                        k /= i
+                        cnt += 1
+                    tot = (tot * comb[n + cnt - 1][cnt]) % mod
+                i += 1
+            # k 自身为质数
+            if k > 1:
+                tot = tot * n % mod
+            ans.append(tot)
+
+        return ans
+
