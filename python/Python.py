@@ -2860,3 +2860,24 @@ class Solution:
         
         return result
 
+
+
+class Solution:
+    def nextPermutation(self, nums):
+        # Step 1: Find the pivot (first number that is smaller than its next number from the end)
+        n = len(nums)
+        i = n - 2
+        while i >= 0 and nums[i] >= nums[i + 1]:
+            i -= 1
+        
+        if i >= 0:
+            # Step 2: Find the number just larger than nums[i] in the suffix
+            j = n - 1
+            while nums[j] <= nums[i]:
+                j -= 1
+            
+            # Step 3: Swap nums[i] and nums[j]
+            nums[i], nums[j] = nums[j], nums[i]
+        
+        # Step 4: Reverse the suffix starting at i + 1
+        nums[i + 1:] = reversed(nums[i + 1:])
