@@ -2755,3 +2755,36 @@ class Solution:
                 return []  # If no progress, it's impossible to stamp
 
         return result[::-1]  # Reverse the result for correct order
+
+
+
+
+
+import heapq
+
+class Solution:
+    def kSmallestPairs(self, nums1, nums2, k):
+        # Initialize the min-heap
+        min_heap = []
+        result = []
+        
+        # If either nums1 or nums2 is empty, return an empty list
+        if not nums1 or not nums2:
+            return result
+        
+        # Start by adding the smallest pairs to the heap
+        for i in range(min(k, len(nums1))):  # Limit to k elements in nums1
+            heapq.heappush(min_heap, (nums1[i] + nums2[0], i, 0))  # (sum, index_in_nums1, index_in_nums2)
+        
+        # Extract k smallest pairs
+        while min_heap and len(result) < k:
+            # Pop the smallest sum pair from the heap
+            sum_val, i, j = heapq.heappop(min_heap)
+            result.append([nums1[i], nums2[j]])
+            
+            # If possible, add the next pair from the same row in nums1 but next column in nums2
+            if j + 1 < len(nums2):
+                heapq.heappush(min_heap, (nums1[i] + nums2[j + 1], i, j + 1))
+        
+        return result
+
