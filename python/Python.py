@@ -2788,3 +2788,37 @@ class Solution:
         
         return result
 
+
+
+
+
+class Solution:
+    def nthUglyNumber(self, n: int) -> int:
+        # Initialize the first ugly number
+        ugly_numbers = [1]
+        
+        # Initialize the indices for multiples of 2, 3, and 5
+        i2 = i3 = i5 = 0
+        
+        # Initialize the next multiples of 2, 3, and 5
+        next2, next3, next5 = 2, 3, 5
+        
+        for _ in range(1, n):
+            # Get the next ugly number by choosing the smallest from next2, next3, and next5
+            next_ugly = min(next2, next3, next5)
+            ugly_numbers.append(next_ugly)
+            
+            # Move the pointer(s) for the respective factors
+            if next_ugly == next2:
+                i2 += 1
+                next2 = ugly_numbers[i2] * 2
+            if next_ugly == next3:
+                i3 += 1
+                next3 = ugly_numbers[i3] * 3
+            if next_ugly == next5:
+                i5 += 1
+                next5 = ugly_numbers[i5] * 5
+        
+        return ugly_numbers[-1]  # Return the nth ugly number
+
+
