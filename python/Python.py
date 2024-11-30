@@ -2822,3 +2822,41 @@ class Solution:
         return ugly_numbers[-1]  # Return the nth ugly number
 
 
+#falied 
+
+import heapq
+
+class Solution:
+    def getSkyline(self, buildings):
+        # Step 1: Create events for each building's start and end.
+        events = []
+        for left, right, height in buildings:
+            events.append((left, height, 'start'))  # Start event
+            events.append((right, height, 'end'))  # End event
+        
+        # Step 2: Sort events
+        events.sort(key=lambda x: (x[0], -x[1] if x[2] == 'start' else x[1]))
+        
+        # Step 3: Initialize the result list and the max-heap (priority queue).
+        result = []
+        max_heap = [(0, float('inf'))]  # (height, right_edge) with ground level as a starting point.
+        
+        # Step 4: Sweep through the events and process each event.
+        for x, height, event_type in events:
+            if event_type == 'start':
+                # Add building height to the heap
+                heapq.heappush(max_heap, (-height, x))
+            else:
+                # Lazy deletion: just mark the building as ended
+                max_heap = [(h, r) for h, r in max_heap if r != x]
+                heapq.heapify(max_heap)
+            
+            # Get the current maximum height
+            current_height = -max_heap[0][0]  # Max heap stores negative heights
+            
+            # If the height has changed, add the point to the result
+            if not result or result[-1][1] != current_height:
+                result.append([x, current_height])
+        
+        return result
+
