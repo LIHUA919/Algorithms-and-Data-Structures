@@ -2620,3 +2620,42 @@ class Solution:
 
         return ans
 
+
+
+from collections import deque
+
+class Solution:
+    def maxNumber(self, nums1, nums2, k):
+        def maxSubarray(nums, l):
+            """Get the maximum subarray of length l."""
+            stack = []
+            drop = len(nums) - l
+            for num in nums:
+                while drop > 0 and stack and stack[-1] < num:
+                    stack.pop()
+                    drop -= 1
+                stack.append(num)
+            return stack[:l]
+        
+        def mergeArrays(arr1, arr2):
+            """Merge two arrays into the largest possible number."""
+            arr1, arr2 = deque(arr1), deque(arr2)
+            result = []
+            while arr1 or arr2:
+                if list(arr1) > list(arr2):
+                    result.append(arr1.popleft())
+                else:
+                    result.append(arr2.popleft())
+            return result
+        
+        max_result = []
+        m, n = len(nums1), len(nums2)
+        
+        # Iterate over all valid splits of k
+        for i in range(max(0, k - n), min(k, m) + 1):
+            sub1 = maxSubarray(nums1, i)
+            sub2 = maxSubarray(nums2, k - i)
+            merged = mergeArrays(sub1, sub2)
+            max_result = max(max_result, merged)
+        
+        return max_result
