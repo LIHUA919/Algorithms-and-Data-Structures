@@ -2717,3 +2717,41 @@ class Solution:
                 right = mid - 1  # Try for fewer tasks
         
         return result
+
+
+# failed again 
+class Solution:
+    def movesToStamp(self, stamp: str, target: str):
+        m, n = len(stamp), len(target)
+        target = list(target)  # Convert target to a mutable list
+        result = []
+        stamped = [False] * (n - m + 1)  # Keep track of stamped positions
+        
+        def canStamp(start):
+            """Check if we can stamp `stamp` at `start` in `target`."""
+            for i in range(m):
+                if target[start + i] != '?' and target[start + i] != stamp[i]:
+                    return False
+            return True
+
+        def doStamp(start):
+            """Apply the stamp at `start` and mark characters as '?'."""
+            for i in range(m):
+                if target[start + i] != '?':
+                    target[start + i] = '?'
+            result.append(start)
+
+        totalStamped = 0
+        while totalStamped < n:
+            stampedInThisRound = False
+            for i in range(n - m + 1):
+                if not stamped[i] and canStamp(i):
+                    doStamp(i)
+                    stamped[i] = True
+                    stampedInThisRound = True
+                    totalStamped += sum(1 for j in range(m) if target[i + j] == '?')
+                    break  # Process one stamp per round
+            if not stampedInThisRound:
+                return []  # If no progress, it's impossible to stamp
+
+        return result[::-1]  # Reverse the result for correct order
