@@ -2659,3 +2659,61 @@ class Solution:
             max_result = max(max_result, merged)
         
         return max_result
+
+
+
+
+
+class Solution:
+    def maxTaskAssign(self, tasks, workers, pills, strength):
+        def canComplete(mid):
+            """Check if `mid` tasks can be completed."""
+            tasks_needed = tasks[:mid]  # Consider only the first `mid` tasks
+            workers_available = workers[:]  # Copy workers array
+            pill_count = pills
+            
+            # Assign tasks from the hardest to the easiest
+            for task in reversed(tasks_needed):
+                # If the strongest available worker can do the task
+                if workers_available and workers_available[-1] >= task:
+                    workers_available.pop()  # Use the worker without a pill
+                elif pill_count > 0:
+                    # Use a pill on the weakest possible worker to meet the task
+                    idx = findWorker(workers_available, task - strength)
+                    if idx == -1:
+                        return False  # No worker can complete this task even with a pill
+                    workers_available.pop(idx)  # Use the selected worker
+                    pill_count -= 1
+                else:
+                    return False  # Task cannot be completed
+            return True
+        
+        def findWorker(workers, required_strength):
+            """Find the weakest worker who can do the task with a pill."""
+            # Binary search for the first worker >= required_strength
+            low, high = 0, len(workers) - 1
+            while low <= high:
+                mid = (low + high) // 2
+                if workers[mid] >= required_strength:
+                    high = mid - 1
+                else:
+                    low = mid + 1
+            return low if low < len(workers) else -1
+
+        # Sort tasks and workers for efficient matching
+        tasks.sort()
+        workers.sort()
+        
+        # Binary search on the maximum number of tasks that can be completed
+        left, right = 0, min(len(tasks), len(workers))
+        result = 0
+        
+        while left <= right:
+            mid = (left + right) // 2
+            if canComplete(mid):
+                result = mid  # Update result as we can complete `mid` tasks
+                left = mid + 1  # Try for more tasks
+            else:
+                right = mid - 1  # Try for fewer tasks
+        
+        return result
