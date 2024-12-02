@@ -2974,3 +2974,77 @@ class Solution:
                 return 1
         
         return 0  # If all corresponding parts are equal
+
+
+
+class Solution:
+    def isPalindrome(self, s: str) -> bool:
+        # Step 1: Normalize the string
+        filtered_s = ''.join(c.lower() for c in s if c.isalnum())
+        
+        # Step 2: Check if the string is equal to its reverse
+        return filtered_s == filtered_s[::-1]
+
+# Example usage:
+solution = Solution()
+
+# Example 1
+s1 = "A man, a plan, a canal: Panama"
+print(solution.isPalindrome(s1))  # Output: True
+
+# Example 2
+s2 = "race a car"
+print(solution.isPalindrome(s2))  # Output: False
+
+
+
+
+
+import heapq
+
+class MedianFinder:
+    def __init__(self):
+        # Two heaps:
+        # max-heap (low) to store the smaller half of the numbers (we store negative to simulate max-heap)
+        self.low = []  # Max-heap (simulated using negative numbers)
+        # min-heap (high) to store the larger half of the numbers
+        self.high = []  # Min-heap
+    
+    def addNum(self, num: int) -> None:
+        # Step 1: Add num to one of the heaps
+        if not self.low or num <= -self.low[0]:
+            # If num is smaller than or equal to the top of low (max-heap), push it to low
+            heapq.heappush(self.low, -num)
+        else:
+            # Otherwise, push it to high (min-heap)
+            heapq.heappush(self.high, num)
+        
+        # Step 2: Rebalance the heaps
+        if len(self.low) > len(self.high) + 1:
+            # If low has more than one extra element, move the top of low to high
+            heapq.heappush(self.high, -heapq.heappop(self.low))
+        elif len(self.high) > len(self.low):
+            # If high has more elements, move the top of high to low
+            heapq.heappush(self.low, -heapq.heappop(self.high))
+    
+    def findMedian(self) -> float:
+        # Step 3: Find the median
+        if len(self.low) > len(self.high):
+            # If low has more elements, the median is the top of low
+            return -self.low[0]
+        else:
+            # If both heaps are equal in size, the median is the average of the tops of both heaps
+            return (-self.low[0] + self.high[0]) / 2.0
+
+# Example usage:
+medianFinder = MedianFinder()
+
+# Add numbers
+medianFinder.addNum(1)
+print(medianFinder.findMedian())  # Output: 1.0
+
+medianFinder.addNum(2)
+print(medianFinder.findMedian())  # Output: 1.5
+
+medianFinder.addNum(3)
+print(medianFinder.findMedian())  # Output: 2.0
