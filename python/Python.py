@@ -2918,3 +2918,33 @@ solution.merge(nums1, m, nums2, n)
 
 # Output the result
 print(nums1)  # Output: [1, 2, 2, 3, 5, 6]
+
+
+class Solution:
+    def rotate(self, nums, k):
+        # Step 1: Normalize k to prevent unnecessary rotations
+        n = len(nums)
+        k = k % n  # Handle cases where k >= n
+        
+        # Step 2: Reverse the entire array
+        self.reverse(nums, 0, n - 1)
+        
+        # Step 3: Reverse the first k elements
+        self.reverse(nums, 0, k - 1)
+        
+        # Step 4: Reverse the remaining n - k elements
+        self.reverse(nums, k, n - 1)
+    
+    # Helper function to reverse a part of the array
+    def reverse(self, nums, start, end):
+        while start < end:
+            nums[start], nums[end] = nums[end], nums[start]
+            start += 1
+            end -= 1
+
+# Example usage
+nums = [1, 2, 3, 4, 5, 6, 7]
+k = 3
+solution = Solution()
+solution.rotate(nums, k)
+print(nums)  # Output: [5, 6, 7, 1, 2, 3, 4]
