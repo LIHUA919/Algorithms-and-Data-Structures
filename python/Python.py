@@ -2948,3 +2948,29 @@ k = 3
 solution = Solution()
 solution.rotate(nums, k)
 print(nums)  # Output: [5, 6, 7, 1, 2, 3, 4]
+
+
+
+
+
+class Solution:
+    def compareVersion(self, version1: str, version2: str) -> int:
+        # Split both version strings into lists of integers
+        v1_parts = list(map(int, version1.split('.')))
+        v2_parts = list(map(int, version2.split('.')))
+        
+        # Compare each corresponding revision
+        # We'll pad the shorter version with zeros for comparison
+        while len(v1_parts) < len(v2_parts):
+            v1_parts.append(0)
+        while len(v2_parts) < len(v1_parts):
+            v2_parts.append(0)
+        
+        # Now, both lists are of equal length, compare them element by element
+        for i in range(len(v1_parts)):
+            if v1_parts[i] < v2_parts[i]:
+                return -1
+            elif v1_parts[i] > v2_parts[i]:
+                return 1
+        
+        return 0  # If all corresponding parts are equal
