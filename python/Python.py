@@ -2881,3 +2881,40 @@ class Solution:
         
         # Step 4: Reverse the suffix starting at i + 1
         nums[i + 1:] = reversed(nums[i + 1:])
+
+
+class Solution:
+    def merge(self, nums1, m, nums2, n):
+        # Start from the end of nums1 and nums2
+        i = m - 1  # Last element in the original nums1
+        j = n - 1  # Last element in nums2
+        k = m + n - 1  # Last position in nums1
+
+        # Merge nums2 into nums1 starting from the end
+        while i >= 0 and j >= 0:
+            if nums1[i] > nums2[j]:
+                nums1[k] = nums1[i]
+                i -= 1
+            else:
+                nums1[k] = nums2[j]
+                j -= 1
+            k -= 1
+
+        # If there are remaining elements in nums2, copy them to nums1
+        while j >= 0:
+            nums1[k] = nums2[j]
+            j -= 1
+            k -= 1
+
+# Example usage
+nums1 = [1, 2, 3, 0, 0, 0]  # Length = m + n
+m = 3  # Number of elements in nums1
+nums2 = [2, 5, 6]
+n = 3  # Number of elements in nums2
+
+# Create an instance of the Solution class and call the merge method
+solution = Solution()
+solution.merge(nums1, m, nums2, n)
+
+# Output the result
+print(nums1)  # Output: [1, 2, 2, 3, 5, 6]
