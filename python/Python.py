@@ -3048,3 +3048,208 @@ print(medianFinder.findMedian())  # Output: 1.5
 
 medianFinder.addNum(3)
 print(medianFinder.findMedian())  # Output: 2.0
+
+
+
+class Solution:
+    def findRepeatedDnaSequences(self, s: str):
+        seen = set()  # To track seen substrings
+        repeated = set()  # To track substrings that are repeated
+        n = len(s)
+        
+        # If the string length is less than 10, return an empty list
+        if n < 10:
+            return []
+        
+        # Iterate through the string and extract 10-character substrings
+        for i in range(n - 9):
+            substring = s[i:i+10]
+            
+            if substring in seen:
+                # If we've seen this substring before, add it to repeated
+                repeated.add(substring)
+            else:
+                # Otherwise, add it to the seen set
+                seen.add(substring)
+        
+        # Convert the repeated set to a list and return
+        return list(repeated)
+
+# Example usage:
+solution = Solution()
+
+# Test case 1:
+s1 = "AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT"
+print(solution.findRepeatedDnaSequences(s1))  # Output: ["AAAAACCCCC", "CCCCCAAAAA"]
+
+# Test case 2:
+s2 = "AAAAAAAAAAAAA"
+print(solution.findRepeatedDnaSequences(s2))  # Output: ["AAAAAAAAAA"]
+
+
+
+
+# time out
+
+import heapq
+
+class Solution:
+    def medianSlidingWindow(self, nums, k):
+        def rebalance():
+            # Ensure the heaps are balanced in size
+            if len(low) > len(high) + 1:
+                heapq.heappush(high, -heapq.heappop(low))
+            elif len(high) > len(low):
+                heapq.heappush(low, -heapq.heappop(high))
+
+        def get_median():
+            # If the window size is odd, the median is the top of the max-heap
+            if k % 2 == 1:
+                return -low[0]
+            # If even, the median is the average of the tops of the two heaps
+            return (-low[0] + high[0]) / 2.0
+
+        low, high = [], []  # max-heap (low) and min-heap (high)
+        result = []
+
+        for i, num in enumerate(nums):
+            # Step 1: Add the new number
+            if len(low) == 0 or num <= -low[0]:
+                heapq.heappush(low, -num)  # Push to max-heap
+            else:
+                heapq.heappush(high, num)  # Push to min-heap
+            rebalance()
+
+            # Step 2: Once we have k elements, calculate the median
+            if i >= k - 1:
+                result.append(get_median())
+
+                # Step 3: Remove the element sliding out of the window
+                out_num = nums[i - k + 1]
+                if out_num <= -low[0]:
+                    low.remove(-out_num)  # Remove from max-heap
+                    heapq.heapify(low)
+                else:
+                    high.remove(out_num)  # Remove from min-heap
+                    heapq.heapify(high)
+                rebalance()
+
+        return result
+
+# Example usage:
+solution = Solution()
+
+# Test case 1:
+nums1 = [1,3,-1,-3,5,3,6,7]
+k1 = 3
+print(solution.medianSlidingWindow(nums1, k1))  # Output: [1.0, -1.0, -1.0, 3.0, 5.0, 6.0]
+
+# Test case 2:
+nums2 = [1,2,3,4,2,3,1,4,2]
+k2 = 3
+print(solution.medianSlidingWindow(nums2, k2))  # Output: [2.0, 3.0, 3.0, 3.0, 2.0, 2.0, 2.0]
+
+
+
+
+from collections import Counter
+
+class Solution:
+    def findSubstring(self, s: str, words: list[str]):
+        if not s or not words or len(words[0]) == 0:
+            return []
+
+        word_len = len(words[0])
+        word_count = len(words)
+        total_len = word_len * word_count
+        words_map = Counter(words)  # Frequency map of the words
+        
+        result = []
+        
+        # Sliding window approach
+        for i in range(word_len):
+            left = i  # left pointer of the sliding window
+            right = i  # right pointer of the sliding window
+            window_map = Counter()  # Map for the current window
+            
+            while right + word_len <= len(s):
+                word = s[right:right + word_len]  # Get the current word from the right
+                right += word_len  # Move the right pointer by word_len
+                
+                # If the word is in the words list, we add it to the window_map
+                if word in words_map:
+                    window_map[word] += 1
+                    
+                    # If the window contains more occurrences of the word than in words_map
+                    # we need to shrink the window from the left
+                    while window_map[word] > words_map[word]:
+                        left_word = s[left:left + word_len]
+                        window_map[left_word] -= 1
+                        left += word_len  # Shrink the window from the left
+                    
+                    # If the window contains exactly the right count of each word, it's a valid substring
+                    if right - left == total_len:
+                        result.append(left)
+                else:
+                    # If the word is not in the list of words, reset the window
+                    window_map.clear()
+                    left = right = right  # Reset the pointers
+        
+        return result
+
+# Example usage:
+solution = Solution()
+
+# Test case 1:
+s1 = "barfoothefoobarman"
+words1 = ["foo","bar"]
+print(solution.findSubstring(s1, words1))  # Output: [0, 9
+
+
+import heapq
+
+class Solution:
+    def smallestRange(self, nums):
+        # Step 1: Initialize a min-heap and find the initial max element
+        min_heap = []
+        current_max = float('-inf')
+        
+        # Initialize the heap with the first element of each list
+        for i in range(len(nums)):
+            heapq.heappush(min_heap, (nums[i][0], i, 0))  # (value, list index, index in the list)
+            current_max = max(current_max, nums[i][0])   # Track the current maximum
+        
+        # Step 2: Initialize the range
+        smallest_range = float('inf')
+        range_start, range_end = 0, 0
+        
+        # Step 3: Start sliding window approach
+        while True:
+            current_min, list_idx, element_idx = heapq.heappop(min_heap)  # Get the minimum element
+            
+            # Update the smallest range
+            if current_max - current_min < smallest_range:
+                smallest_range = current_max - current_min
+                range_start, range_end = current_min, current_max
+            
+            # Step 4: If the current list is exhausted, break the loop
+            if element_idx + 1 < len(nums[list_idx]):
+                next_element = nums[list_idx][element_idx + 1]
+                heapq.heappush(min_heap, (next_element, list_idx, element_idx + 1))
+                current_max = max(current_max, next_element)  # Update the max if necessary
+            else:
+                break  # If any list is exhausted, we stop
+        
+        # Return the smallest range found
+        return [range_start, range_end]
+
+# Example usage:
+solution = Solution()
+
+# Test case 1:
+nums1 = [[1, 4, 7], [2, 5, 8], [3, 6, 9]]
+print(solution.smallestRange(nums1))  # Output: [1, 3]
+
+# Test case 2:
+nums2 = [[1, 10, 20], [2, 15, 30], [5, 25, 40]]
+print(solution.smallestRange(nums2))  # Output: [5, 10]
