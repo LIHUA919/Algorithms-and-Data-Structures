@@ -3488,3 +3488,69 @@ print_linked_list(result)  # Expected output: 1 -> 2 -> 3 -> 4 -> 5
 head = create_linked_list([1, 1, 1, 1, 1])
 result = solution.deleteDuplicates(head)
 print_linked_list(result)  # Expected output: (empty list)
+
+
+# Definition for singly-linked list.
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+class Solution:
+    def swapPairs(self, head: ListNode) -> ListNode:
+        # Edge case: if the list is empty or contains only one node
+        if not head or not head.next:
+            return head
+        
+        # Dummy node that will make it easier to handle the head
+        dummy = ListNode(0)
+        dummy.next = head
+        prev = dummy  # `prev` is the node before the pair to be swapped
+        
+        while prev.next and prev.next.next:
+            # Identify the two nodes to be swapped
+            first = prev.next
+            second = first.next
+            
+            # Swap the two nodes
+            first.next = second.next
+            second.next = first
+            prev.next = second  # Connect previous node to the second node
+            
+            # Move `prev` two steps forward for the next pair
+            prev = first
+        
+        return dummy.next
+
+# Helper function to create a linked list from a list of integers
+def create_linked_list(arr):
+    dummy_head = ListNode(0)
+    current = dummy_head
+    for num in arr:
+        current.next = ListNode(num)
+        current = current.next
+    return dummy_head.next
+
+# Helper function to print a linked list
+def print_linked_list(l):
+    while l:
+        print(l.val, end=" -> " if l.next else "\n")
+        l = l.next
+
+# Example usage:
+solution = Solution()
+
+# Test case 1: Swap every two adjacent nodes
+head = create_linked_list([1, 2, 3, 4])
+result = solution.swapPairs(head)
+print_linked_list(result)  # Expected output: 2 -> 1 -> 4 -> 3
+
+# Test case 2: List with an odd number of nodes
+head = create_linked_list([1, 2, 3])
+result = solution.swapPairs(head)
+print_linked_list(result)  # Expected output: 2 -> 1 -> 3
+
+# Test case 3: List with only one node
+head = create_linked_list([1])
+result = solution.swapPairs(head)
+print_linked_list(result)  # Expected output: 1 (no swap)
