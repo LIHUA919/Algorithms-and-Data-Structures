@@ -3253,3 +3253,238 @@ print(solution.smallestRange(nums1))  # Output: [1, 3]
 # Test case 2:
 nums2 = [[1, 10, 20], [2, 15, 30], [5, 25, 40]]
 print(solution.smallestRange(nums2))  # Output: [5, 10]
+
+
+class Solution:
+    def findLength(self, nums1, nums2):
+        # If either of the arrays is empty, return 0
+        if not nums1 or not nums2:
+            return 0
+        
+        # Initialize a 2D DP table with only two rows (space optimization)
+        previous = [0] * (len(nums2) + 1)
+        current = [0] * (len(nums2) + 1)
+        max_len = 0
+        
+        # Iterate through each element of both arrays
+        for i in range(1, len(nums1) + 1):
+            for j in range(1, len(nums2) + 1):
+                # If elements match, extend the length of the subarray
+                if nums1[i - 1] == nums2[j - 1]:
+                    current[j] = previous[j - 1] + 1
+                    max_len = max(max_len, current[j])
+                else:
+                    current[j] = 0  # No match, reset the length
+            previous = current[:]  # Move the current row to the previous row
+        
+        return max_len
+
+# Example usage:
+solution = Solution()
+
+# Test case 1:
+nums1 = [1, 2, 3, 2, 1]
+nums2 = [3, 2, 1, 4, 7]
+print(solution.findLength(nums1, nums2))  # Output: 3 (The subarray [3, 2, 1])
+
+# Test case 2:
+nums1 = [0, 0, 0, 0, 1]
+nums2 = [1, 0, 0, 0, 0]
+print(solution.findLength(nums1, nums2))  # Output: 4 (The subarray [0, 0, 0, 0])
+
+
+
+# error
+# Definition for singly-linked list.
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+class Solution:
+    def addTwoNumbers(self, l1: ListNode, l2: ListNode) -> ListNode:
+        # Initialize a dummy node and a pointer to build the result linked list
+        dummy_head = ListNode(0)
+        current = dummy_head
+        carry = 0
+        
+        # Traverse through both linked lists
+        while l1 or l2 or carry:
+            # Get the values of the current nodes of l1 and l2, or 0 if the node is None
+            val1 = l1.val if l1 else 0
+            val2 = l2.val if l2 else 0
+            
+            # Calculate the sum and the new carry
+            total = val1 + val2 + carry
+            carry = total // 10  # Carry is either 0 or 1
+            current.next = ListNode(total % 10)  # Create a new node with the result digit
+            current = current.next  # Move the current pointer to the new node
+            
+            # Move to the next nodes in l1 and l2 if available
+            if l1:
+                l1 = l1.next
+            if l2:
+                l2 = l2.next
+        
+        # Return the head of the result list, which is the next of dummy_head
+        return dummy_head.next
+
+# Helper function to create a linked list from a list of integers
+def create_linked_list(arr):
+    dummy_head = ListNode(0)
+    current = dummy_head
+    for num in arr:
+        current.next = ListNode(num)
+        current = current.next
+    return dummy_head.next
+
+# Helper function to print a linked list
+def print_linked_list(l):
+    result = []
+    while l:
+        result.append(str(l.val))
+        l = l.next
+    print(" -> ".join(result))
+
+# Example usage:
+solution = Solution()
+
+# Test case 1:
+l1 = create_linked_list([2, 4, 3])  # Represents the number 342
+l2 = create_linked_list([5, 6, 4])  # Represents the number 465
+result = solution.addTwoNumbers(l1, l2)
+print_linked_list(result)  # Output: 7 -> 0 -> 8, which represents 807
+
+
+
+# Definition for singly-linked list.
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+class Solution:
+    def rotateRight(self, head: ListNode, k: int) -> ListNode:
+        # Edge case: if the list is empty or has only one node, no rotation needed
+        if not head or not head.next or k == 0:
+            return head
+        
+        # Step 1: Find the length of the list and the last node
+        length = 1
+        tail = head
+        while tail.next:
+            tail = tail.next
+            length += 1
+        
+        # Step 2: Find the effective rotation steps
+        k = k % length  # In case k is larger than the length of the list
+        if k == 0:
+            return head  # No need to rotate if k is a multiple of the length
+        
+        # Step 3: Make the list circular by connecting the tail to the head
+        tail.next = head
+        
+        # Step 4: Find the new tail, which is at position length - k - 1
+        new_tail = head
+        for _ in range(length - k - 1):
+            new_tail = new_tail.next
+        
+        # Step 5: The new head is the next node of the new tail
+        new_head = new_tail.next
+        # Break the circular list by setting the new tail's next to None
+        new_tail.next = None
+        
+        return new_head
+
+# Helper function to create a linked list from a list of integers
+def create_linked_list(arr):
+    dummy_head = ListNode(0)
+    current = dummy_head
+    for num in arr:
+        current.next = ListNode(num)
+        current = current.next
+    return dummy_head.next
+
+# Helper function to print a linked list
+def print_linked_list(l):
+    while l:
+        print(l.val, end=" -> " if l.next else "\n")
+        l = l.next
+
+# Example usage:
+solution = Solution()
+
+# Test case 1: Rotate a list by 2 places
+head = create_linked_list([1, 2, 3, 4, 5])
+result = solution.rotateRight(head, 2)
+print_linked_list(result)  # Expected output: 4 -> 5 -> 1 -> 2 -> 3
+
+# Test case 2: Rotate a list by 3 places
+head = create_linked_list([1, 2, 3, 4, 5])
+result = solution.rotateRight(head, 3)
+print_linked_list(result)  # Expected output: 3 -> 4 -> 5 -> 1 -> 2
+
+
+# Definition for singly-linked list.
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+class Solution:
+    def deleteDuplicates(self, head: ListNode) -> ListNode:
+        # Create a dummy node which will be used to simplify edge cases
+        dummy = ListNode(0)
+        dummy.next = head
+        prev = dummy
+        current = head
+        
+        while current:
+            # Check if the current node is a duplicate
+            if current.next and current.val == current.next.val:
+                # Skip all nodes with the same value as current
+                while current.next and current.val == current.next.val:
+                    current = current.next
+                # Link the previous distinct node to the next distinct node
+                prev.next = current.next
+            else:
+                # Move prev pointer to current if no duplicate
+                prev = prev.next
+            
+            # Move current pointer ahead
+            current = current.next
+        
+        return dummy.next
+
+# Helper function to create a linked list from a list of integers
+def create_linked_list(arr):
+    dummy_head = ListNode(0)
+    current = dummy_head
+    for num in arr:
+        current.next = ListNode(num)
+        current = current.next
+    return dummy_head.next
+
+# Helper function to print a linked list
+def print_linked_list(l):
+    while l:
+        print(l.val, end=" -> " if l.next else "\n")
+        l = l.next
+
+# Example usage:
+solution = Solution()
+
+# Test case 1: List with duplicates
+head = create_linked_list([1, 2, 2, 3, 3, 4, 5])
+result = solution.deleteDuplicates(head)
+print_linked_list(result)  # Expected output: 1 -> 4 -> 5
+
+# Test case 2: List with no duplicates
+head = create_linked_list([1, 2, 3, 4, 5])
+result = solution.deleteDuplicates(head)
+print_linked_list(result)  # Expected output: 1 -> 2 -> 3 -> 4 -> 5
+
+# Test case 3: List with all duplicates
+head = create_linked_list([1, 1, 1, 1, 1])
+result = solution.deleteDuplicates(head)
+print_linked_list(result)  # Expected output: (empty list)
