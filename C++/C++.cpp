@@ -292,3 +292,50 @@ public:
 };
 
 
+class Solution {
+public:
+    void reorderList(ListNode *head) {
+        if (head == nullptr) {
+            return;
+        }
+        vector<ListNode *> vec;
+        ListNode *node = head;
+        while (node != nullptr) {
+            vec.emplace_back(node);
+            node = node->next;
+        }
+        int i = 0, j = vec.size() - 1;
+        while (i < j) {
+            vec[i]->next = vec[j];
+            i++;
+            if (i == j) {
+                break;
+            }
+            vec[j]->next = vec[i];
+            j--;
+        }
+        vec[i]->next = nullptr;
+    }
+};
+
+
+class Solution {
+public:
+    ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+        unordered_set<ListNode *> visited;
+        ListNode *temp = headA;
+        while (temp != nullptr) {
+            visited.insert(temp);
+            temp = temp->next;
+        }
+        temp = headB;
+        while (temp != nullptr) {
+            if (visited.count(temp)) {
+                return temp;
+            }
+            temp = temp->next;
+        }
+        return nullptr;
+    }
+};
+
