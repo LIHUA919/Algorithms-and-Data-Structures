@@ -339,3 +339,164 @@ public:
     }
 };
 
+
+
+class Solution {
+public:
+    TreeNode* ans;
+    bool dfs(TreeNode* root, TreeNode* p, TreeNode* q) {
+        if (root == nullptr) return false;
+        bool lson = dfs(root->left, p, q);
+        bool rson = dfs(root->right, p, q);
+        if ((lson && rson) || ((root->val == p->val || root->val == q->val) && (lson || rson))) {
+            ans = root;
+        } 
+        return lson || rson || (root->val == p->val || root->val == q->val);
+    }
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        dfs(root, p, q);
+        return ans;
+    }
+};
+
+
+class Solution {
+public:
+    int kthSmallest(TreeNode* root, int k) {
+        stack<TreeNode *> stack;
+        while (root != nullptr || stack.size() > 0) {
+            while (root != nullptr) {
+                stack.push(root);
+                root = root->left;
+            }
+            root = stack.top();
+            stack.pop();
+            --k;
+            if (k == 0) {
+                break;
+            }
+            root = root->right;
+        }
+        return root->val;
+    }
+};
+
+class Solution {
+public:
+    vector<vector<int>> zigzagLevelOrder(TreeNode* root) {
+        vector<vector<int>> ans;
+        if (!root) {
+            return ans;
+        }
+
+        queue<TreeNode*> nodeQueue;
+        nodeQueue.push(root);
+        bool isOrderLeft = true;
+
+        while (!nodeQueue.empty()) {
+            deque<int> levelList;
+            int size = nodeQueue.size();
+            for (int i = 0; i < size; ++i) {
+                auto node = nodeQueue.front();
+                nodeQueue.pop();
+                if (isOrderLeft) {
+                    levelList.push_back(node->val);
+                } else {
+                    levelList.push_front(node->val);
+                }
+                if (node->left) {
+                    nodeQueue.push(node->left);
+                }
+                if (node->right) {
+                    nodeQueue.push(node->right);
+                }
+            }
+            ans.emplace_back(vector<int>{levelList.begin(), levelList.end()});
+            isOrderLeft = !isOrderLeft;
+        }
+
+        return ans;
+    }
+};
+
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+private:
+    int maxSum = INT_MIN;
+
+public:
+    int maxGain(TreeNode* node) {
+        if (node == nullptr) {
+            return 0;
+        }
+        
+        // 递归计算左右子节点的最大贡献值
+        // 只有在最大贡献值大于 0 时，才会选取对应子节点
+        int leftGain = max(maxGain(node->left), 0);
+        int rightGain = max(maxGain(node->right), 0);
+
+        // 节点的最大路径和取决于该节点的值与该节点的左右子节点的最大贡献值
+        int priceNewpath = node->val + leftGain + rightGain;
+
+        // 更新答案
+        maxSum = max(maxSum, priceNewpath);
+
+        // 返回节点的最大贡献值
+        return node->val + max(leftGain, rightGain);
+    }
+
+    int maxPathSum(TreeNode* root) {
+        maxGain(root);
+        return maxSum;
+    }
+};
+
+
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int n = prices.size();
+        int dp[n][2];
+        dp[0][0] = 0, dp[0][1] = -prices[0];
+        for (int i = 1; i < n; ++i) {
+            dp[i][0] = max(dp[i - 1][0], dp[i - 1][1] + prices[i]);
+            dp[i][1] = max(dp[i - 1][1], dp[i - 1][0] - prices[i]);
+        }
+        return dp[n - 1][0];
+    }
+};
+
+
+class Solution {
+public:
+    int splitArray(vector<int>& nums, int m) {
+        int n = nums.size();
+        vector<vector<long long>> f(n + 1, vector<long long>(m + 1, LLONG_MAX));
+        vector<long long> sub(n + 1, 0);
+        for (int i = 0; i < n; i++) {
+            sub[i + 1] = sub[i] + nums[i];
+        }
+        f[0][0] = 0;
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= min(i, m); j++) {
+                for (int k = 0; k < i; k++) {
+                    f[i][j] = min(f[i][j], max(f[k][j - 1], sub[i] - sub[k]));
+                }
+            }
+        }
+        return (int)f[n][m];
+    }
+};
+
+
