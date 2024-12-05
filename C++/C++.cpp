@@ -489,7 +489,14 @@ public:
         }
         f[0][0] = 0;
         for (int i = 1; i <= n; i++) {
-            for (int j = 1; j <= min(i, m); j++) {
+            for (int j = 1; j <= min(i, m); j++) 
+            
+            
+            
+            
+            
+            
+            {
                 for (int k = 0; k < i; k++) {
                     f[i][j] = min(f[i][j], max(f[k][j - 1], sub[i] - sub[k]));
                 }
