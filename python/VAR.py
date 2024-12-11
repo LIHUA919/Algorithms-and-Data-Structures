@@ -19,6 +19,11 @@ vae_ckpt, var_ckpt = 'vae_ch160v4096z32.pth', f'var_d{MODEL_DEPTH}.pth'
 if not osp.exists(vae_ckpt): os.system(f'wget {hf_home}/{vae_ckpt}')
 if not osp.exists(var_ckpt): os.system(f'wget {hf_home}/{var_ckpt}')
 
+
+
+
+
+
 # build vae, var
 patch_nums = (1, 2, 3, 4, 5, 6, 8, 10, 13, 16)
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -28,6 +33,11 @@ if 'vae' not in globals() or 'var' not in globals():
         device=device, patch_nums=patch_nums,
         num_classes=1000, depth=MODEL_DEPTH, shared_aln=False,
     )
+
+
+
+
+
 
 # load checkpoints
 vae.load_state_dict(torch.load(vae_ckpt, map_location='cpu'), strict=True)
