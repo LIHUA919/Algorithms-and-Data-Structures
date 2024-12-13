@@ -417,6 +417,20 @@ std::pair<std::string, std::vector<int>> LocateErrors(const std::string& str, Ch
     if (pos == str.npos) {
         return std::make_pair("Missing separator", std::vector<int>{});
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
     if (pos == 0 || pos + CHECKSUM_SIZE >= str.size()) {
         error_locations.push_back(pos);
         return std::make_pair("Invalid separator position", std::move(error_locations));
