@@ -370,6 +370,19 @@ std::string Encode(Encoding encoding, const std::string& hrp, const data& values
     return ret;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 /** Decode a Bech32 or Bech32m string. */
 DecodeResult Decode(const std::string& str, CharLimit limit) {
     std::vector<int> errors;
@@ -430,7 +443,7 @@ std::pair<std::string, std::vector<int>> LocateErrors(const std::string& str, Ch
 
 
 
-    
+
     if (pos == 0 || pos + CHECKSUM_SIZE >= str.size()) {
         error_locations.push_back(pos);
         return std::make_pair("Invalid separator position", std::move(error_locations));
