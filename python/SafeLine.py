@@ -13,6 +13,7 @@ import random
 import socket
 
 
+
 texts = {
     'hello1': {
         'en': 'SafeLine is a self-hosted WAF(Web Application Firewall) to protect your web apps from attacks and exploits.',
