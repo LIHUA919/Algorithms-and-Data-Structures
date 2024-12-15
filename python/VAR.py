@@ -66,6 +66,7 @@ np.random.seed(seed)
 torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
 
+
 # run faster
 tf32 = True
 torch.backends.cudnn.allow_tf32 = bool(tf32)
