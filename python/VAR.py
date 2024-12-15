@@ -48,6 +48,7 @@ for p in var.parameters(): p.requires_grad_(False)
 print(f'prepare finished.')
 
 
+
 ############################# 2. Sample with classifier-free guidance
 
 # set args
