@@ -611,6 +611,7 @@ public:
         }
     }
 
+
     vector<vector<char>> updateBoard(vector<vector<char>>& board, vector<int>& click) {
         int x = click[0], y = click[1];
         if (board[x][y] == 'M') {
