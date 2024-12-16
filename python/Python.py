@@ -3926,3 +3926,13 @@ class Solution:
                     f[i][j] = min(f[i][j], max(f[k][j - 1], sub[i] - sub[k]))
         
         return f[n][m]
+
+
+class Solution:
+    def findPeakElement(self, nums: List[int]) -> int:
+        idx = 0
+        for i in range(1, len(nums)):
+            if nums[i] > nums[idx]:
+                idx = i
+        return idx
+
