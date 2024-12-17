@@ -1872,6 +1872,9 @@ var movesToStamp = function(stamp, target) {
   
 
 
+
+
+  
   function nextPermutation(nums) {
     let i = nums.length - 2;                   // 向左遍历，i从倒数第二开始是为了nums[i+1]要存在
     while (i >= 0 && nums[i] >= nums[i + 1]) { // 寻找第一个小于右邻居的数
