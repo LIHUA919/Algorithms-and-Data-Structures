@@ -1810,3 +1810,68 @@ var removeDuplicateLetters = function(s) {
     return sb.join('');
 };
 
+
+
+/**
+ * @param {string} stamp
+ * @param {string} target
+ * @return {number[]}
+ */
+
+
+var movesToStamp = function(stamp, target) {
+    const ans = [];
+    let change = 0;
+    const m = stamp.length;
+    target = target.split('');
+    const n = target.length;
+    
+    while (true) {
+      let someMatch = false; // 在 target 中是否某些位置开始可以匹配
+  
+      for (let i = 0; i < n; i++) {
+        let allMark = true; // 是否全是 ?
+        let currMatch = true; // 是否 i 开始，stamp 可以全部匹配(字符相同或者是 ? 都表示匹配)
+  
+        for (let j = 0; j < m; j++) {
+          if (target[i + j] !== '?') {
+            allMark = false;
+          }
+          if (target[i + j] === '?' || target[i + j] === stamp[j]) {
+            continue;
+          } else {
+            currMatch = false;
+            break;
+          }
+        }
+  
+        // 当前 i 位置匹配 stamp，并且匹配的位置还有的不是 ?，把对应位置变成 ?，并记录改变的数量
+        if (!allMark && currMatch) {
+          ans.push(i);
+          for (let j = 0; j < m; j++) {
+            if (target[i + j] !== '?') {
+              target[i + j] = '?';
+              change++;
+            }
+          }
+          someMatch = true;
+        }
+      }
+  
+      // target 所有位置尝试过了，没有能匹配的情况了
+      if (!someMatch) {
+        return [];
+      }
+      // 字符变成 ? 的数量等于 target.length，完全匹配，返回结果
+      if (change === n) {
+        ans.reverse();
+        return ans;
+      }
+    }
+  };
+  
+  
+  
+  
+  
+  
