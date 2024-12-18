@@ -2298,3 +2298,20 @@ var findValueOfPartition = function(nums) {
     return res;
 };
 
+var getSmallestString = function(s, k) {
+    s = s.split('');
+    for (let i = 0; i < s.length; ++i) {
+        let dis = Math.min(s[i].charCodeAt(0) - 'a'.charCodeAt(0), 'z'.charCodeAt(0) - s[i].charCodeAt(0) + 1);
+        if (dis <= k) {
+            s[i] = 'a';
+            k -= dis;
+        } else {
+            s[i] = String.fromCharCode(s[i].charCodeAt(0) - k);
+            break;
+        }
+    }
+    return s.join('');
+};
+
+
+
