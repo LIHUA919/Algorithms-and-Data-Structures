@@ -2197,3 +2197,32 @@ var maximumDetonation = function(bombs) {
     return res;
 };
 
+
+
+const mod = 1e9 + 7;
+const inf = 0x3f3f3f3f;
+
+var sumOfPowers = function(nums, k) {
+    const n = nums.length;
+    let res = 0;
+    const d = Array.from({ length: n }, () => Array.from({ length: k + 1 }, () => new Map()));
+    nums.sort((a, b) => a - b);
+    
+    for (let i = 0; i < n; i++) {
+        d[i][1].set(inf, 1);
+        for (let j = 0; j < i; j++) {
+            const diff = Math.abs(nums[i] - nums[j]);
+            for (let p = 2; p <= k; p++) {
+                for (const [v, cnt] of d[j][p - 1].entries()) {
+                    const key = Math.min(diff, v);
+                    d[i][p].set(key, (d[i][p].get(key) || 0) + cnt % mod);
+                }
+            }
+        }
+        for (const [v, cnt] of d[i][k].entries()) {
+            res = (res + v * cnt % mod) % mod;
+        }
+    }
+    return res;
+};
+
