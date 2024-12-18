@@ -2226,3 +2226,30 @@ var sumOfPowers = function(nums, k) {
     return res;
 };
 
+
+/**
+ * @param {number[]} nums
+ * @param {number[]} moveFrom
+ * @param {number[]} moveTo
+ * @return {number[]}
+ */
+var relocateMarbles = function(nums, moveFrom, moveTo) {
+    
+};
+
+var relocateMarbles = function(nums, moveFrom, moveTo) {
+    let mp = new Map();
+    let ans = [];
+
+    nums.forEach(num => mp.set(num, true));
+    for (let i = 0; i < moveFrom.length; i++) {
+        mp.delete(moveFrom[i]);
+        mp.set(moveTo[i], true);
+    }
+    mp.forEach((_, key) => ans.push(key));
+    ans.sort((a, b) => a - b);
+    return ans;
+};
+
+
+
