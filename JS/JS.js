@@ -2114,3 +2114,43 @@ var lengthOfLIS = function(nums) {
     return piles;
   };
 
+  var minValidStrings = function(words, target) {
+    const prefixFunction = (word, target) => {
+        const s = word + '#' + target;
+        const n = s.length;
+        const pi = new Array(n).fill(0);
+        for (let i = 1; i < n; i++) {
+            let j = pi[i - 1];
+            while (j > 0 && s[i] !== s[j]) {
+                j = pi[j - 1];
+            }
+            if (s[i] === s[j]) {
+                j++;
+            }
+            pi[i] = j;
+        }
+        return pi;
+    };
+
+    const n = target.length;
+    const back = new Array(n).fill(0);
+    for (const word of words) {
+        const pi = prefixFunction(word, target);
+        const m = word.length;
+        for (let i = 0; i < n; i++) {
+            back[i] = Math.max(back[i], pi[m + 1 + i]);
+        }
+    }
+
+    const dp = new Array(n + 1).fill(0);
+    for (let i = 1; i <= n; i++) {
+        dp[i] = 1e9;
+    }
+    for (let i = 0; i < n; i++) {
+        dp[i + 1] = dp[i + 1 - back[i]] + 1;
+        if (dp[i + 1] > n) {
+            return -1;
+        }
+    }
+    return dp[n];
+};
