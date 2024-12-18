@@ -2370,3 +2370,28 @@ function powMod(x, y, mod) {
 }
 
 
+/**
+ * @param {number[][]} points
+ * @param {number} w
+ * @return {number}
+ */
+var minRectanglesToCoverPoints = function(points, w) {
+    
+};
+
+
+var minRectanglesToCoverPoints = function(points, w) {
+    points.sort((a, b) => a[0] - b[0]);
+    let res = 0;
+    let bound = -1;
+    for (let p of points) {
+        if (p[0] > bound) {
+            bound = p[0] + w;
+            res++;
+        }
+    }
+    return res;
+};
+
+
+
