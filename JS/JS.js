@@ -1947,6 +1947,44 @@ class UnionFind {
     }
 }
 
+const MOD = 1e9 + 7;
+const MAXN = 1e4 + 14;
+const MAXM = 14;
+
+var waysToFillArray = function(queries) {
+    const comb = new Array(MAXN).fill(null).map(() => new Array(MAXM).fill(0));
+    const ans = [];
+
+    comb[0][0] = 1;
+    for (let i = 1; i < MAXN; i++) {
+        comb[i][0] = 1;
+        for (let j = 1; j <= i && j < MAXM; j++) {
+            comb[i][j] = (comb[i - 1][j - 1] + comb[i - 1][j]) % MOD;
+        }
+    }
+
+    for (const q of queries) {
+        let [n, k] = q;
+        let tot = BigInt(1);
+        for (let i = 2; i * i <= k; i++) {
+            if (k % i === 0) {
+                let cnt = 0;
+                while (k % i === 0) {
+                    k /= i;
+                    cnt++;
+                }
+                tot = (tot * BigInt(comb[n + cnt - 1][cnt])) % BigInt(MOD);
+            }
+        }
+        // k 自身为质数
+        if (k > 1) {
+            tot = (tot * BigInt(n)) % BigInt(MOD);
+        }
+        ans.push(Number(tot));
+    }
+    return ans;
+};
+
 
   
   
