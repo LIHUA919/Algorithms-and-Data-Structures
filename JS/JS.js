@@ -2380,6 +2380,9 @@ var minRectanglesToCoverPoints = function(points, w) {
 };
 
 
+
+
+
 var minRectanglesToCoverPoints = function(points, w) {
     points.sort((a, b) => a[0] - b[0]);
     let res = 0;
