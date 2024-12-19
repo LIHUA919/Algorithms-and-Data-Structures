@@ -3989,3 +3989,14 @@ class Solution:
                     dp[i] = max(dp[i], dp[j] + 1)
         return max(dp)
 
+class Solution:
+    def countSubarrays(self, nums: List[int], k: int) -> int:
+        ans = 0
+        for i, x in enumerate(nums):
+            for j in range(i - 1, -1, -1):
+                if nums[j] & x == nums[j]:
+                    break
+                nums[j] &= x
+            ans += bisect_right(nums, k, 0, i + 1) - bisect_left(nums, k, 0, i + 1)
+        return ans
+
