@@ -2397,4 +2397,22 @@ var minRectanglesToCoverPoints = function(points, w) {
 };
 
 
+var numberOfAlternatingGroups = function(colors, k) {
+    const n = colors.length;
+    let res = 0, cnt = 1;
+    for (let i = -k + 2; i < n; i++) {
+        if (colors[(i + n) % n] !== colors[(i - 1 + n) % n]) {
+            cnt++;
+        } else {
+            cnt = 1;
+        }
+        if (cnt >= k) {
+            res++;
+        }
+    }
+    return res;
+};
+
+
+
 
