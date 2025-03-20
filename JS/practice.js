@@ -110,3 +110,53 @@ var isValid = function(s) {
     }
     return !stack.length    
 }
+
+// inorder
+
+var inorderTraversal = function(root) {
+    const res = []
+    const inorder = (root) => {
+        if(root === null) {
+            return
+        }
+        inorder(root.left)
+        res.push(root.val)
+        inorder(root.right)
+    }
+    inorder(root)
+    return res
+}
+
+var inorderTraversal = function(root) {
+    const res = []
+    const stack = []
+    while(root || stack.length) {
+        while(root) {
+            stack.push(root)
+            root = root.left
+        }
+        root = stack.pop()
+        res.push(root.val)
+        root = root.right
+    }
+    return res
+}
+
+
+// Greedy + Monotone Stack
+
+var removeKdigits = function(num, k) {  
+    const stack = []
+    for(let digit of num) {
+        while(k && stack.length && stack[stack.length - 1] > digit) {
+            stack.pop()
+            k--
+        }
+        stack.push(digit)
+    }
+    while(k--) {
+        stack.pop()
+    }
+    let ans = stack.join('').replace(/^0+/, '')
+    return ans === '' ? '0' : ans
+}
